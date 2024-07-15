@@ -1,0 +1,4 @@
+bureaucrat
+*.o
+*.d
+.vscode
