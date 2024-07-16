@@ -3,7 +3,8 @@
 void testBureaucrat(std::string name, int grade)
 {
 	static int i = 1;
-	std::cout << std::endl << "📄 TEST " << i <<std::endl << "NAME: " << name << " | GRADE: " << grade << std::endl;
+	std::cout << std::endl << std::string(21, '*') << "Test #" << i << std::string(21, '*') << std::endl;
+	std::cout << "NAME: " << name << " | GRADE: " << grade << std::endl;
 	try
 	{
 		Bureaucrat bob = Bureaucrat(name, grade);  // This might throw an exception
