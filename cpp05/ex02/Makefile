@@ -2,7 +2,7 @@ NAME	= bureaucrat
 
 CC		= c++
 
-CFLAGS	= -Wall -Wextra -Werror -std=c++98 -MMD
+CFLAGS	= -Wall -Werror -std=c++98 -MMD
 
 HEADERS = $(wildcard *.hpp)
 
