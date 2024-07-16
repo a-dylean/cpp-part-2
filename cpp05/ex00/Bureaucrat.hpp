@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Bureaucrat_HPP
+#define Bureaucrat_HPP
 
 #include <exception>
 #include <iostream>
@@ -8,11 +9,15 @@ class Bureaucrat
 private:
 	std::string const _name;
 	int _grade;
-	Bureaucrat();
+
 
 public:
-	Bureaucrat(std::string const name, int grade);
+	Bureaucrat();
+	Bureaucrat(std::string name, int grade);
+	Bureaucrat(Bureaucrat const &obj);
 	~Bureaucrat();
+
+	Bureaucrat &operator=(const Bureaucrat &obj);
 
 	std::string getName() const;
 	int getGrade() const;
@@ -33,3 +38,4 @@ public:
 
 std::ostream &operator<<(std::ostream &os, const Bureaucrat& b);
 
+#endif
