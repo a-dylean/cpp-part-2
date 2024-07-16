@@ -1,14 +1,17 @@
 #include "Bureaucrat.hpp"
 #include "Form.hpp"
 
-void test(std::string name, int grade)
+void testForm(std::string name, int grade_to_sign, int grade_to_exec, Bureaucrat &b)
 {
 	static int i = 1;
-	std::cout << std::endl << "TEST " << i <<std::endl << "NAME: " << name << " | GRADE: " << grade << std::endl;
+	std::cout << std::endl << "📄 TEST " << i <<std::endl << "NAME: " << name << " | REQUIRED GRADE: " << grade_to_sign << std::endl;
 	try
 	{
-		Form form = Form("Form", 100, 100); 
-		std::cout << form;
+		Form form = Form(name, grade_to_sign, grade_to_exec); 
+		std::cout << form << std::endl;
+		std::cout << b << std::endl;
+		std::cout << "🚩 Result: " << std::endl;
+		b.signForm(form);
 	}
 	catch (const Form::GradeTooLowException &e)
 	{
@@ -23,8 +26,9 @@ void test(std::string name, int grade)
 
 int main()
 {
-	test("Bob", 100);
-	// test("Sam", -10);
-	// test("Alex", 155);
-	// test("Bill", 1);
+	Bureaucrat strongB = Bureaucrat("Bob", 5);
+	Bureaucrat weakB = Bureaucrat("Sam", 100);
+	testForm("Invalid Form", 0, 0, strongB);
+	testForm("Basic Form", 100, 150, strongB);
+	testForm("Special Form", 5, 5, weakB);
 }

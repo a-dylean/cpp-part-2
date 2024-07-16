@@ -1,9 +1,9 @@
 #include "Bureaucrat.hpp"
 
-void test(std::string name, int grade)
+void testBureaucrat(std::string name, int grade)
 {
 	static int i = 1;
-	std::cout << std::endl << "TEST " << i <<std::endl << "NAME: " << name << " | GRADE: " << grade << std::endl;
+	std::cout << std::endl << "📄 TEST " << i <<std::endl << "NAME: " << name << " | GRADE: " << grade << std::endl;
 	try
 	{
 		Bureaucrat bob = Bureaucrat(name, grade);  // This might throw an exception
@@ -27,8 +27,8 @@ void test(std::string name, int grade)
 
 int main()
 {
-	test("Bob", 100);
-	test("Sam", -10);
-	test("Alex", 155);
-	test("Bill", 1);
+	testBureaucrat("Bob", 100);
+	testBureaucrat("Sam", -10);
+	testBureaucrat("Alex", 155);
+	testBureaucrat("Bill", 1);
 }

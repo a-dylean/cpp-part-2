@@ -1,16 +1,28 @@
 #include "Bureaucrat.hpp"
 
-Bureaucrat::Bureaucrat() {};
+Bureaucrat::Bureaucrat(): _name("default"), _grade(150) {};
 
 Bureaucrat::Bureaucrat(std::string name, int grade): _name(name), _grade(grade)
 {
 	if (grade < 1)
-		throw GradeTooLowException();
-	else if (grade > 150)
-		throw GradeTooHighException();
+		throw Bureaucrat::GradeTooLowException();
+	if (grade > 150)
+		throw Bureaucrat::GradeTooHighException();
 };
 
 Bureaucrat::~Bureaucrat() {}
+
+Bureaucrat::Bureaucrat(Bureaucrat const &obj) {
+	if (this != &obj)
+		*this = obj;
+}
+
+Bureaucrat	&Bureaucrat::operator= (const Bureaucrat &obj) {
+	if (this == &obj)
+		return *this;
+	_grade = obj._grade;
+	return *this;
+}
 
 std::string Bureaucrat::getName() const
 {
@@ -24,20 +36,27 @@ int Bureaucrat::getGrade() const
 
 void Bureaucrat::increment()
 {
+	if (_grade == 1)
+		throw Bureaucrat::GradeTooHighException();
 	_grade--;
-	if (_grade < 1)
-		throw GradeTooLowException();
-	else if (_grade > 150)
-		throw GradeTooHighException();
 };
 
 void Bureaucrat::decrement()
 {
+	if (_grade == 150)
+		throw Bureaucrat::GradeTooLowException();
 	_grade++;
-	if (_grade < 1)
-		throw GradeTooLowException();
-	else if (_grade > 150)
-		throw GradeTooHighException();
+}
+
+void Bureaucrat::signForm(Form &f)
+{
+	try {
+		f.beSigned(*this);
+		std::cout << _name << " signed " << f.getName() << std::endl;
+
+	} catch (Form::GradeTooLowException &e) {
+		std::cout << _name << " couldn't sign " << f.getName() << " because his grade is too low" << std::endl;
+	}
 }
 const char	*Bureaucrat::GradeTooHighException::what( void ) const throw()
 {
@@ -50,6 +69,8 @@ const char	*Bureaucrat::GradeTooLowException::what( void ) const throw()
 }
 
 std::ostream& operator<<(std::ostream& os, const Bureaucrat& b) {
-    os << b.getName() << ", bureaucrat grade " << b.getGrade();
+    os << std::string(50, '-') << std::endl
+	<< "BUREAUCRAT INFO: " << b.getName() << ", bureaucrat grade " << b.getGrade() << std::endl
+	<< std::string(50, '-') ;
     return os;
 }
