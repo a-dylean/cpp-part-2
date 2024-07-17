@@ -15,10 +15,12 @@ private:
 	int const _grade_to_sign;
 	int const _grade_to_exec;
 	std::string const _target;
+
 protected:
 	AForm();
 	AForm(std::string name, int grade_to_sign, int grade_to_exec);
 	AForm(std::string name, int grade_to_sign, int grade_to_exec, std::string target);
+
 public:
 	AForm(const AForm &obj);
 	virtual ~AForm();
@@ -32,27 +34,27 @@ public:
 
 	void beSigned(Bureaucrat &b);
 
-	void		execute(Bureaucrat const &executor) const;
-	virtual void	executeBehaviour() const = 0;
+	void execute(Bureaucrat const &executor) const;
+	virtual void executeBehaviour() const = 0;
 
 	class GradeTooHighException : public std::exception
 	{
-		public:
-			const char	*what( void ) const throw();
+	public:
+		const char *what(void) const throw();
 	};
-	
-	class GradeTooLowException : public	std::exception
+
+	class GradeTooLowException : public std::exception
 	{
-		public:
-			const char	*what( void ) const throw();
+	public:
+		const char *what(void) const throw();
 	};
-	class NoSignatureException : public	std::exception
+	class NoSignatureException : public std::exception
 	{
-		public:
-			const char	*what( void ) const throw();
+	public:
+		const char *what(void) const throw();
 	};
 };
 
-std::ostream &operator<<(std::ostream &os, const AForm& f);
+std::ostream &operator<<(std::ostream &os, const AForm &f);
 
 #endif

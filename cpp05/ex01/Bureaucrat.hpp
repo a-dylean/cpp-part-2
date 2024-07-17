@@ -29,17 +29,17 @@ public:
 
 	class GradeTooHighException : public std::exception
 	{
-		public:
-			const char	*what( void ) const throw();
+	public:
+		const char *what(void) const throw();
 	};
-	
-	class GradeTooLowException : public	std::exception
+
+	class GradeTooLowException : public std::exception
 	{
-		public:
-			const char	*what( void ) const throw();
+	public:
+		const char *what(void) const throw();
 	};
 };
 
-std::ostream &operator<<(std::ostream &os, const Bureaucrat& b);
+std::ostream &operator<<(std::ostream &os, const Bureaucrat &b);
 
 #endif

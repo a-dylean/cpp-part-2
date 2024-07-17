@@ -12,12 +12,14 @@ Form::Form(std::string name, int grade_to_sign, int grade_to_exec) : _name(name)
 
 Form::~Form() {}
 
-Form::Form(Form const &obj): _name(obj._name), _grade_to_sign(obj._grade_to_sign), _grade_to_exec(obj._grade_to_exec) {
+Form::Form(Form const &obj) : _name(obj._name), _grade_to_sign(obj._grade_to_sign), _grade_to_exec(obj._grade_to_exec)
+{
 	if (this != &obj)
 		*this = obj;
 }
 
-Form	&Form::operator= (const Form &obj) {
+Form &Form::operator=(const Form &obj)
+{
 	if (this == &obj)
 		return *this;
 	return *this;
@@ -46,13 +48,14 @@ int Form::getGradeToExec() const
 void Form::beSigned(Bureaucrat &b)
 {
 	if (_signed)
-		return ;
+		return;
 	if (b.getGrade() > _grade_to_sign)
 		throw Form::GradeTooLowException();
 	_signed = true;
 }
-const char* Form::GradeTooHighException::what() const throw() {
-    return "Exception: Grade too high!";
+const char *Form::GradeTooHighException::what() const throw()
+{
+	return "Exception: Grade too high!";
 }
 
 const char *Form::GradeTooLowException::what(void) const throw()
@@ -63,8 +66,8 @@ const char *Form::GradeTooLowException::what(void) const throw()
 std::ostream &operator<<(std::ostream &os, const Form &f)
 {
 	os << std::string(49, '-') << std::endl
-	<< "FORM INFO:" << std::endl
-	<< std::string(49, '-') << std::endl
+	   << "FORM INFO:" << std::endl
+	   << std::string(49, '-') << std::endl
 	   << "Form name: " << f.getName() << std::endl
 	   << "Signed: " << f.getSigned() << std::endl
 	   << "Grade to sign: " << f.getGradeToSign() << std::endl

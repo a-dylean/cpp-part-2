@@ -1,17 +1,20 @@
 #include "AForm.hpp"
 #include "Intern.hpp"
 
-int	main() 
+int main()
 {
-	Intern	someRandomIntern;
-	AForm	*form[4] = {someRandomIntern.makeForm("Invalid request Form", "Bender"), someRandomIntern.makeForm("Robotomy Request Form", "Bender"), someRandomIntern.makeForm("Shrubbery Creation Form", "Bender"), someRandomIntern.makeForm("Presidential Pardon Form", "Bender")};
+	Intern someRandomIntern;
+	std::string forms[4] = {"Invalid request Form", "Robotomy Request Form", "Shrubbery Creation Form", "Presidential Pardon Form"};
+	AForm *form[4] = {someRandomIntern.makeForm("Invalid request Form", "Bender"), someRandomIntern.makeForm("Robotomy Request Form", "Bender"), someRandomIntern.makeForm("Shrubbery Creation Form", "Bender"), someRandomIntern.makeForm("Presidential Pardon Form", "Bender")};
 	try
 	{
 		Bureaucrat strongB = Bureaucrat("Bob", 5);
 		Bureaucrat weakB = Bureaucrat("Sam", 150);
 		for (int i = 0; i < 4; i++)
 		{
-			std::cout << std::endl << std::string(21, '*') << "Test #" << i << std::string(21, '*') << std::endl;
+			std::cout << std::endl
+					  << std::string(21, '*') << "Test #" << i << std::string(21, '*') << std::endl;
+			std::cout << "Param: " << forms[i] << std::endl;
 			if (form[i])
 			{
 				std::cout << *form[i] << std::endl;
@@ -24,11 +27,10 @@ int	main()
 			}
 			else
 				std::cout << "Form not found" << std::endl;
-			
 		}
 	}
 	catch (std::exception &e)
-	{	
+	{
 		std::cout << e.what() << std::endl;
 		for (int i = 0; i < 4; i++)
 			delete form[i];

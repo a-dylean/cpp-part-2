@@ -4,11 +4,12 @@
 void testForm(std::string name, int grade_to_sign, int grade_to_exec, Bureaucrat &b)
 {
 	static int i = 1;
-	std::cout << std::endl << std::string(21, '*') << "Test #" << i << std::string(21, '*') << std::endl;
+	std::cout << std::endl
+			  << std::string(21, '*') << "Test #" << i << std::string(21, '*') << std::endl;
 	std::cout << "NAME: " << name << " | REQUIRED GRADE: " << grade_to_sign << std::endl;
 	try
 	{
-		Form form = Form(name, grade_to_sign, grade_to_exec); 
+		Form form = Form(name, grade_to_sign, grade_to_exec);
 		std::cout << form << std::endl;
 		std::cout << b << std::endl;
 		std::cout << "🚩 Result: " << std::endl;

@@ -14,6 +14,7 @@ private:
 	bool _signed;
 	int const _grade_to_sign;
 	int const _grade_to_exec;
+
 public:
 	Form();
 	Form(std::string name, int grade_to_sign, int grade_to_exec);
@@ -30,17 +31,17 @@ public:
 
 	class GradeTooHighException : public std::exception
 	{
-		public:
-			const char	*what( void ) const throw();
+	public:
+		const char *what(void) const throw();
 	};
-	
-	class GradeTooLowException : public	std::exception
+
+	class GradeTooLowException : public std::exception
 	{
-		public:
-			const char	*what( void ) const throw();
+	public:
+		const char *what(void) const throw();
 	};
 };
 
-std::ostream &operator<<(std::ostream &os, const Form& f);
+std::ostream &operator<<(std::ostream &os, const Form &f);
 
 #endif

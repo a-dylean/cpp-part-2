@@ -1,25 +1,27 @@
 #include "ShrubberyCreationForm.hpp"
 #include <fstream>
 
-ShrubberyCreationForm::ShrubberyCreationForm(): AForm("Shrubbery Creation Form", 145, 137, "undefined") {}
+ShrubberyCreationForm::ShrubberyCreationForm() : AForm("Shrubbery Creation Form", 145, 137, "undefined") {}
 
-ShrubberyCreationForm::ShrubberyCreationForm(std::string target): 
-	AForm("Shrubbery Creation Form", 145, 137, target) {}
+ShrubberyCreationForm::ShrubberyCreationForm(std::string target) : AForm("Shrubbery Creation Form", 145, 137, target) {}
 
 ShrubberyCreationForm::~ShrubberyCreationForm() {}
 
-ShrubberyCreationForm::ShrubberyCreationForm(ShrubberyCreationForm const &obj) {
-	if (this != &obj)
-		*this = obj;
+ShrubberyCreationForm::ShrubberyCreationForm(ShrubberyCreationForm const &obj)
+{
+    if (this != &obj)
+        *this = obj;
 }
 
-ShrubberyCreationForm &ShrubberyCreationForm::operator=(ShrubberyCreationForm const &obj) {
-	if (this == &obj)
-		return *this;
-	return *this;
+ShrubberyCreationForm &ShrubberyCreationForm::operator=(ShrubberyCreationForm const &obj)
+{
+    if (this == &obj)
+        return *this;
+    return *this;
 }
 
-void ShrubberyCreationForm::executeBehaviour() const {
+void ShrubberyCreationForm::executeBehaviour() const
+{
     std::string fileName = this->getTarget() + "_shruberry";
     std::ofstream file(fileName.c_str());
 
