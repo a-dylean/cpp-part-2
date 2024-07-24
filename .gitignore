@@ -1,5 +1,6 @@
 bureaucrat
 *_shruberry
+convert
 *.o
 *.d
 .vscode
