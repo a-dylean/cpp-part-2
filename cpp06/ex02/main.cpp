@@ -18,31 +18,14 @@ Base * generate(void) {
 
 void identify(Base *p)
 {
-    A* a = dynamic_cast<A*>(p);
-    if(a == NULL)
-    {
-        B* b = dynamic_cast<B*>(p);
-        if(b == NULL)
-        {
-            C* c = dynamic_cast<C*>(p);
-            if(c == NULL)
-            {
-                std::cout << "It's either an unknown type or a Base pointer!" << std::endl;
-            }
-            else
-            {
-                std::cout << "It's a type C! (Found in the identify pointer function)" << std::endl;
-            }
-        }
-        else
-        {
-            std::cout << "It's a type B! (Found in the identify pointer function)" << std::endl;
-        }
-    }
+   	if (dynamic_cast<A*>(p) != NULL)
+        std::cout << "type A" << std::endl;
+    else if (dynamic_cast<B*>(p) != NULL)
+        std::cout << "type B" << std::endl;
+    else if (dynamic_cast<C*>(p) != NULL)
+        std::cout << "type C" << std::endl;
     else
-    {
-        std::cout << "It's a type A! (Found in the identify pointer function)" << std::endl;
-    }
+        std::cout << "type Unknown" << std::endl;
 }
 
 void identify(Base &p)
@@ -51,7 +34,7 @@ void identify(Base &p)
     {
         A& a = dynamic_cast<A&>(p);
         (void)a;
-        std::cout << "It's a type A! (Found in the identify ref function)" << std::endl;
+        std::cout << "type A" << std::endl;
         return;
     }
     catch(std::exception& e){}
@@ -59,7 +42,7 @@ void identify(Base &p)
     {
         B& b = dynamic_cast<B&>(p);
         (void)b;
-        std::cout << "It's a type B! (Found in the identify ref function)" << std::endl;
+        std::cout << "type B" << std::endl;
         return;
     }
     catch(std::exception& e){}
@@ -67,12 +50,12 @@ void identify(Base &p)
     {
         C& c = dynamic_cast<C&>(p);
         (void)c;
-        std::cout << "It's a type C! (Found in the identify ref function)" << std::endl;
+        std::cout << "type C" << std::endl;
         return;
     }
     catch(std::exception& e)
     {
-        std::cout << "It's either an unknown type or a Base pointer!" << std::endl;
+        std::cout << "type Unknown" << std::endl;
     }
 }
 
@@ -80,7 +63,7 @@ int main() {
 	srand(time(NULL));
 	
 	int	i = 0;
-	while (i < 2)
+	while (i < 3)
 	{
 		Base *Test = generate();
 
