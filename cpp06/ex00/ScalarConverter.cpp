@@ -84,7 +84,7 @@ void convertInt(const std::string &str)
 		std::cout << "char: Non displayable" << std::endl;
 	else
     	std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;
-	if (i <= INT_MAX && i >= INT_MIN)
+	if (i >= INT_MIN && i <= INT_MAX)
 		std::cout << "int: " << i << std::endl;
 	else
 		std::cout << "int: impossible" << std::endl;
