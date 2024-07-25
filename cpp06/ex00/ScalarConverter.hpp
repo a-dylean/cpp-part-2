@@ -8,10 +8,10 @@
 #include <climits>
 #include <cctype>
 #include <cfloat>
-#include <cmath>
-#include <cstdlib>
 #include <climits>
 #include <sstream>
+#include <cerrno>
+#include <cmath>
 
 enum num_type {
     ERR,
@@ -19,7 +19,7 @@ enum num_type {
     INT,
     FLOAT,
     DOUBLE,
-	PSEUDO,
+	INF,
 };
 
 class  ScalarConverter

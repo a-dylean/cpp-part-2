@@ -6,7 +6,7 @@ ScalarConverter::ScalarConverter()
 
 ScalarConverter::ScalarConverter(const ScalarConverter &copy)
 {
-	(void) copy;
+	*this = copy;
 }
 
 ScalarConverter::~ScalarConverter()
@@ -20,129 +20,182 @@ ScalarConverter & ScalarConverter::operator=(const ScalarConverter &copy)
 	return *this;
 }
 
-static num_type get_type(const std::string & str) 
-{  
-    int		dots = 0;
-	size_t	i = 0;
-	if (str == "nan" || str == "nanf" || str == "+inf" || str == "+inff" || str == "-inf" || str == "-inff") {
-		return PSEUDO;
-	}
-    // if (str == "nan" || str == "+inf" || str == "-inf")
-    //     return DOUBLE;
-    // if (str == "nanf" || str == "+inff" || str == "-inff")
-    //     return FLOAT;
-    while (str[i]) {
-		if (i == str.length() - 1 && dots == 1 && (str[i] == 'f' || str[i] == 'F'))
-			return FLOAT;
-		if (str[i] != '.' && !isdigit(str[i]))
-			return ERR;
-		if (str[i] == '.')
-			dots++;
-		i++;
-	}
-	if (dots == 1 && (str[str.length() - 1] != '.'))
-		return DOUBLE;
-	if (!dots)
-		return INT;
-    if (str.length() == 1 && (str[0] >= 32 && str[0] < 127)) {
-		return CHAR;
-	}    
-	return ERR;
+bool isChar(const std::string &str) {
+    return str.length() == 1 && !isdigit(str[0]);
 }
 
-static bool	setValues
-	(const std::string &str, char &c, int &n, float &f, double &d) {
-	switch (get_type(str)) {
-		case ERR:
-			return false;
-		case CHAR:
-			c = str[0];
-			n = static_cast<int>(c);
-			f = static_cast<float>(c);
-			d = static_cast<double>(c);
-			break;
-		case INT:
-			n = atoi(str.c_str());
-			c = static_cast<char>(n);
-			f = static_cast<float>(n);
-			d = static_cast<double>(n);
-			break;
-		case FLOAT:
-			f = atof(str.c_str());
-			c = static_cast<char>(f);
-			n = static_cast<int>(f);
-			d = static_cast<double>(f);
-			break;
-		case DOUBLE:
-			d = strtod(str.c_str(), NULL);
-			c = static_cast<char>(d);
-			n = static_cast<int>(d);
-			f = static_cast<float>(d);
-			break;
-        case PSEUDO:
-            break;
-
-	}
-	return true;
+bool isInt(const std::string &str) {
+    char *end;
+    long val = strtol(str.c_str(), &end, 10);
+    return *end == '\0' && val >= INT_MIN && val <= INT_MAX;
 }
 
-static void displayChar(const char &c, const double &d) {
-	std::cout << "char: ";
-	if (d > CHAR_MAX || !isprint(c))
-		std::cout << "Non displayable" << std::endl;
+bool isFloat(const std::string &str) {
+    char *end;
+    errno = 0;
+    float val = strtof(str.c_str(), &end);
+    return *end == 'f' && end[1] == '\0' && errno == 0 && val != HUGE_VALF && val != -HUGE_VALF;
+}
+
+bool isDouble(const std::string &str) {
+    char *end;
+    errno = 0;
+    double val = strtod(str.c_str(), &end);
+    return *end == '\0' && errno == 0 && val != HUGE_VAL && val != -HUGE_VAL;
+}
+
+bool isInf(const std::string &str)
+{
+	return str == "-inff" || str == "+inff" || str == "-inf" || str == "+inf";
+}
+num_type getType(const std::string &str) {
+    if (isChar(str)) return CHAR;
+    if (isInt(str)) return INT;
+    if (isFloat(str)) return FLOAT;
+    if (isDouble(str)) return DOUBLE;
+	if (isInf(str)) return INF;
+    return ERR;
+}
+
+void convertChar(const std::string &str)
+{
+	char c = str[0];
+	if (!isprint(str[0]))
+		std::cout << "char: Non displayable" << std::endl;
 	else
-		std::cout << "'" << c << "'" << std::endl;
-}
-
-static void displayInt(const int &n, const double &d) {
-	std::cout << "int: ";
-	if (d > INT_MAX)
-		std::cout << "Overflow occured" << std::endl;
-	else
-		std::cout << n << std::endl;
-}
-
-static void displayFloat(const float &f, const double &d) {
-	std::cout << "float: ";
-	if (d > MAXFLOAT)
-		std::cout << "Overflow occured" << std::endl;
-	else {
-		std::cout << f;
-		if ((int)(f - (int)f == 0)) // if fractional part is 0
-			std::cout << ".0";
-		std::cout << "f" << std::endl;
-	}
-}
-
-static void displayDouble(const double &d) {
-	std::cout << "double: ";
-	std::cout << d;
-	if ((int)(d - (int)d == 0)) // if fractional part is 0
-		std::cout << ".0";
+    	std::cout << "char: '" << c << "'" << std::endl;
+    std::cout << "int: " << static_cast<int>(c) << std::endl;
+	std::cout << "float: " << std::flush;
+	std::cout << static_cast<float>(c) <<std::flush;
+	if (static_cast<float>(c) == floor(static_cast<float>(c)))
+		std::cout << ".0" << std::flush;
+	std::cout << "f" << std::endl;
+	std::cout << "double: " << std::flush;
+	std::cout << static_cast<double>(c) <<std::flush;
+	if (static_cast<double>(c) == floor(static_cast<double>(c)))
+	std::cout << ".0" << std::flush;
 	std::cout << std::endl;
 }
 
-static void	displayValues
-	(const char &c, const int &n, const float &f, const double &d) {
-	displayChar(c, d);
-	displayInt(n, d);
-	displayFloat(f, d);
-	displayDouble(d);
+void convertInt(const std::string &str)
+{
+	int i = atoi(str.c_str());
+	if (!isprint(static_cast<char>(i)))
+		std::cout << "char: Non displayable" << std::endl;
+	else
+    	std::cout << "char: '" << static_cast<char>(i) << "'" << std::endl;
+	if (i <= INT_MAX && i >= INT_MIN)
+		std::cout << "int: " << i << std::endl;
+	else
+		std::cout << "int: impossible" << std::endl;
+	std::cout << "float: " << std::flush;
+	std::cout << static_cast<float>(i) <<std::flush;
+	if (static_cast<float>(i) == floor(static_cast<float>(i)))
+		std::cout << ".0" << std::flush;
+	std::cout << "f" << std::endl;
+	std::cout << "double: " << std::flush;
+	std::cout << static_cast<double>(i) <<std::flush;
+	if (static_cast<double>(i) == floor(static_cast<double>(i)))
+	std::cout << ".0" << std::flush;
+	std::cout << std::endl;
 }
 
-void ScalarConverter::convert(const std::string &str)
+void convertFloat(const std::string &str)
 {
-    std::cout << get_type(str) << std::endl;
-    char	c = 0;
-	int		n = 0;
-	float	f = 0;
-	double	d = 0;
+	float f = strtof(str.c_str(), NULL);
+    if (f >= CHAR_MIN && f <= CHAR_MAX && isprint(static_cast<char>(f))) {
+        std::cout << "char: '" << static_cast<char>(f) << "'" << std::endl;
+    } else {
+        std::cout << "char: impossible" << std::endl;
+    }
+    if (f >= INT_MIN && f <= INT_MAX) {
+        std::cout << "int: " << static_cast<int>(f) << std::endl;
+    } else {
+        std::cout << "int: impossible" << std::endl;
+    }
+    std::cout << "float: " << std::flush;
+	std::cout << f <<std::flush;
+	if (f == floor(f))
+		std::cout << ".0" << std::flush;
+	std::cout << "f" << std::endl;
+	std::cout << "double: " << std::flush;
+	std::cout << static_cast<double>(f) <<std::flush;
+	if (static_cast<double>(f) == floor(static_cast<double>(f)))
+	std::cout << ".0" << std::flush;
+	std::cout << std::endl;
+}
 
-	if (!setValues(str, c, n, f, d)) {
-		std::cerr << "FORMAT ERROR" << std::endl;
+void convertDouble(const std::string &str)
+{
+	double d = strtod(str.c_str(), NULL);
+    if (d >= CHAR_MIN && d <= CHAR_MAX && isprint(static_cast<char>(d))) {
+        std::cout << "char: '" << static_cast<char>(d) << "'" << std::endl;
+    } else {
+        std::cout << "char: impossible" << std::endl;
+    }
+    if (d >= INT_MIN && d <= INT_MAX) {
+        std::cout << "int: " << static_cast<int>(d) << std::endl;
+    } else {
+       std::cout << "int: impossible" << std::endl;
+    }
+	std::cout << "float: " << std::flush;
+	std::cout << static_cast<float>(d) <<std::flush;
+	if (static_cast<float>(d) == floor(static_cast<float>(d)))
+		std::cout << ".0" << std::flush;
+	std::cout << "f" << std::endl;
+	std::cout << "double: " << std::flush;
+	std::cout << d <<std::flush;
+	if (d == floor(d))
+	std::cout << ".0" << std::flush;
+	std::cout << std::endl;
+}
+
+void convertInf(const std::string &str)
+{
+	if (str == "-inf" || str == "+inf" || str == "+inff" || str == "-inff") {
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		if (str[0] == '-') {
+			std::cout << "float: -inff" << std::endl;
+			std::cout << "double: -inf" << std::endl;
+		} else {
+			std::cout << "float: +inff" << std::endl;
+			std::cout << "double: +inf" << std::endl;
+		}
+	}
+}
+
+void printError()
+{
+	std::cout << "char: impossible" << std::endl;
+	std::cout << "int: impossible" << std::endl;
+	std::cout << "float: impossible" << std::endl;
+	std::cout << "double: impossible" << std::endl;
+}
+void	ScalarConverter::convert(const std::string& str) 
+{
+	if (str.size() == 0) {
+		std::cerr << "Invalid literal" << std::endl;
 		return;
 	}
-	displayValues(c, n, f, d);
-
+	switch(getType(str))
+	{
+		case CHAR:
+			convertChar(str);
+			break;
+		case INT:
+			convertInt(str);
+			break;
+		case FLOAT:
+			convertFloat(str);
+			break;
+		case DOUBLE:
+			convertDouble(str);
+			break;
+		case INF:
+			convertInf(str);
+			break;
+		default:
+			printError();
+	}
 }
-
