@@ -11,8 +11,8 @@ class Span
     private:
         unsigned int N;
         std::vector<int> integers;
-    public:
         Span();
+    public:
         Span(unsigned int N);
         Span(Span const &obj);
         ~Span();
@@ -23,5 +23,7 @@ class Span
         void addRange(std::vector<int>::const_iterator begin, std::vector<int>::const_iterator end);
         int shortestSpan();
         int longestSpan();
+
+        std::vector<int> getIntegers();
 
 };
