@@ -4,6 +4,7 @@ convert
 serializer
 base
 exec
+btc
 *.o
 *.d
 .vscode
