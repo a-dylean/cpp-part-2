@@ -20,53 +20,53 @@ void subjectTest()
     --it;
     while (it != ite)
     {
-    std::cout << *it << std::endl;
-    ++it;
+        std::cout << *it << std::endl;
+        ++it;
     }
     std::stack<int> s(mstack);
 }
 
 void listTest()
 {
-	std::list<int> list;
+    std::list<int> list;
 
-	list.push_back(5);
-	list.push_back(17);
-	std::cout << list.back() << std::endl;
-	list.pop_back();
-	std::cout << list.size() << std::endl;
-	list.push_back(3);
-	list.push_back(5);
-	list.push_back(737);
-	list.push_back(0);
-	std::list<int>::iterator it = list.begin();
-	std::list<int>::iterator ite = list.end();
-	++it;
-	--it;
-	while (it != ite)
-	{
-	std::cout << *it << std::endl;
-	++it;
+    list.push_back(5);
+    list.push_back(17);
+    std::cout << list.back() << std::endl;
+    list.pop_back();
+    std::cout << list.size() << std::endl;
+    list.push_back(3);
+    list.push_back(5);
+    list.push_back(737);
+    list.push_back(0);
+    std::list<int>::iterator it = list.begin();
+    std::list<int>::iterator ite = list.end();
+    ++it;
+    --it;
+    while (it != ite)
+    {
+        std::cout << *it << std::endl;
+        ++it;
     }
 }
 void methodsTest()
 {
     std::list<int> list;
 
-	list.push_back(5);
-	list.push_back(17);
-	list.pop_back();
-	list.push_back(3);
-	list.push_back(5);
-	list.push_back(737);
-	list.push_back(0);
+    list.push_back(5);
+    list.push_back(17);
+    list.pop_back();
+    list.push_back(3);
+    list.push_back(5);
+    list.push_back(737);
+    list.push_back(0);
     std::list<int>::reverse_iterator rit = list.rbegin();
-	std::list<int>::reverse_iterator rite = list.rend();
+    std::list<int>::reverse_iterator rite = list.rend();
     std::cout << "Reversed list:" << std::endl;
-	while (rit != rite)
-	{
-	std::cout << *rit << std::endl;
-	++rit;
+    while (rit != rite)
+    {
+        std::cout << *rit << std::endl;
+        ++rit;
     }
 
     MutantStack<int> mstack;
@@ -83,8 +83,8 @@ void methodsTest()
     std::cout << "Reversed mstack: " << std::endl;
     while (mrit != mrite)
     {
-    std::cout << *mrit << std::endl;
-    ++mrit;
+        std::cout << *mrit << std::endl;
+        ++mrit;
     }
 
     std::cout << ".empty(): " << mstack.empty() << std::endl;

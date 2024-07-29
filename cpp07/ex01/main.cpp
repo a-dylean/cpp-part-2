@@ -1,16 +1,19 @@
 #include "iter.hpp"
 
 template <typename T>
-void printElement(const T& element) {
+void printElement(const T &element)
+{
     std::cout << element << " ";
 }
 
 template <typename T>
-void incrementElement(T& element) {
+void incrementElement(T &element)
+{
     ++element;
 }
 
-int main() {
+int main()
+{
     // Test with an array of integers
     int intArray[] = {1, 2, 3, 4, 5};
     int intArraySize = sizeof(intArray) / sizeof(intArray[0]);
@@ -34,7 +37,7 @@ int main() {
     std::cout << "Incremented intArray: ";
     iter(doubleArray, doubleArraySize, incrementElement<double>);
     iter(doubleArray, doubleArraySize, printElement<double>);
-    
+
     std::cout << std::endl;
 
     // Test with an array of strings

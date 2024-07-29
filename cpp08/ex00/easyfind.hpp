@@ -3,16 +3,21 @@
 #include <exception>
 #include <algorithm>
 
-class NotFound: public std::exception {
-	public:
-		virtual const char *what() const throw();
+class NotFound : public std::exception
+{
+public:
+	virtual const char *what() const throw();
 };
 
-template<typename T>
-void easyfind(T& container, int value) {
-	if (std::find(container.begin(), container.end(), value) == container.end()) {
+template <typename T>
+void easyfind(T &container, int value)
+{
+	if (std::find(container.begin(), container.end(), value) == container.end())
+	{
 		throw NotFound();
-	} else {
+	}
+	else
+	{
 		std::cout << "Found " << *std::find(container.begin(), container.end(), value) << std::endl;
 	}
 }

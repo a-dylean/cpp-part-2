@@ -5,7 +5,7 @@
 
 void testList()
 {
-std::list<int> list;
+    std::list<int> list;
 
     for (int i = 0; i < 10; i++)
     {
@@ -21,13 +21,13 @@ std::list<int> list;
     for (int i = 0; i < 9; i++)
     {
         try
-        {  
+        {
             std::cout << std::string(30, '-') << std::endl;
             std::cout << "Value: " << i << std::endl;
             std::cout << "Result: " << std::flush;
             easyfind(list, i);
         }
-        catch(const std::exception& e)
+        catch (const std::exception &e)
         {
             std::cerr << e.what() << '\n';
         }
@@ -36,40 +36,40 @@ std::list<int> list;
 
 void testVector()
 {
-	std::vector<int> vector;
+    std::vector<int> vector;
 
-	for (int i = 0; i < 10; i++)
-	{
-		vector.push_back(i * 2);
-	}
+    for (int i = 0; i < 10; i++)
+    {
+        vector.push_back(i * 2);
+    }
     std::cout << "Vector:" << std::endl;
     for (int i = 0; i < 10; i++)
     {
         std::cout << vector[i] << " ";
     }
     std::cout << "\n\nTrying to find values from 0 to 8 in the array..." << std::endl;
-	for (int i = 0; i < 9; i++)
-	{
-		try
-		{  
+    for (int i = 0; i < 9; i++)
+    {
+        try
+        {
             std::cout << std::string(30, '-') << std::endl;
             std::cout << "Value: " << i << std::endl;
             std::cout << "Result: " << std::flush;
-			easyfind(vector, i);
-          
-		}
-		catch(const std::exception& e)
-		{
-			std::cerr << e.what() << '\n';
-		}
-	}
-
+            easyfind(vector, i);
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+    }
 }
 
 int main(void)
 {
-	testList();
-	std::cout << std::endl << std::string(30, '=') << std::endl << std::endl;
-	testVector();
-	return 0;
+    testList();
+    std::cout << std::endl
+              << std::string(30, '=') << std::endl
+              << std::endl;
+    testVector();
+    return 0;
 }

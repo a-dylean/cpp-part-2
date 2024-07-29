@@ -6,24 +6,24 @@
 #include <algorithm>
 #include <vector>
 
-class Span 
+class Span
 {
-    private:
-        unsigned int N;
-        std::vector<int> integers;
-        Span();
-    public:
-        Span(unsigned int N);
-        Span(Span const &obj);
-        ~Span();
+private:
+    unsigned int N;
+    std::vector<int> integers;
+    Span();
 
-        Span &operator=(const Span &obj);
+public:
+    Span(unsigned int N);
+    Span(Span const &obj);
+    ~Span();
 
-        void addNumber(int number);
-        void addRange(std::vector<int>::const_iterator begin, std::vector<int>::const_iterator end);
-        int shortestSpan();
-        int longestSpan();
+    Span &operator=(const Span &obj);
 
-        std::vector<int> getIntegers();
+    void addNumber(int number);
+    void addRange(std::vector<int>::const_iterator begin, std::vector<int>::const_iterator end);
+    int shortestSpan();
+    int longestSpan();
 
+    std::vector<int> getIntegers();
 };

@@ -1,6 +1,6 @@
 #include "Span.hpp"
 
-#include <ctime> 
+#include <ctime>
 #include <cstdlib>
 
 void subjectTest()
@@ -18,37 +18,39 @@ void subjectTest()
 void customTest(int num)
 {
     std::cout << "Test with " << num << " numbers:" << std::endl;
-    try {
+    try
+    {
         Span sp(num);
-    
+
         std::srand(std::time(0));
         std::vector<int> numbers;
         numbers.reserve(num);
-    for (int i = 0; i < num; ++i) {
-        numbers.push_back(std::rand() % 100);
-    }
-    sp.addRange(numbers.begin(), numbers.end());
-    std::vector<int> integers = sp.getIntegers();
-    for (int i = 0; i < num; ++i)
-    {
-        std::cout << integers[i] << std::endl;
-    }
-    std::vector<int>::iterator minIt = std::min_element(integers.begin(), integers.end());
-    std::cout << "Min int: " << *minIt << std::endl;
-    
-    std::vector<int>::iterator maxIt = std::max_element(integers.begin(), integers.end());
-    std::cout << "Max int: " << *maxIt << std::endl; 
+        for (int i = 0; i < num; ++i)
+        {
+            numbers.push_back(std::rand() % 100);
+        }
+        sp.addRange(numbers.begin(), numbers.end());
+        std::vector<int> integers = sp.getIntegers();
+        for (int i = 0; i < num; ++i)
+        {
+            std::cout << integers[i] << std::endl;
+        }
+        std::vector<int>::iterator minIt = std::min_element(integers.begin(), integers.end());
+        std::cout << "Min int: " << *minIt << std::endl;
+
+        std::vector<int>::iterator maxIt = std::max_element(integers.begin(), integers.end());
+        std::cout << "Max int: " << *maxIt << std::endl;
         std::cout << "Shortest span: " << sp.shortestSpan() << std::endl;
         std::cout << "Longest span: " << sp.longestSpan() << std::endl;
 
         // uncommenting two lines below will throw an exception
-        //sp.addNumber(34);
+        // sp.addNumber(34);
         // sp.addRange(numbers.begin(), numbers.end());
-
-    } catch (const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << e.what() << std::endl;
     }
-
 }
 
 int main()
