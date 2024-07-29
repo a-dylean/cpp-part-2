@@ -15,18 +15,11 @@ int main()
     test("nan");
     test("42.0f");
 
-    // user input tests
-    while (1)
-    {
-        std::string input;
-        std::cout << "Enter a literal: ";
-        if (std::cin.eof())
-           return(0);
-        std::cin >> input;
-        std::cout << std::string(30, '-') << std::endl;
-        ScalarConverter::convert(input);
-        std::cout << std::string(30, '-') << std::endl;
-        std::cout << std::endl;
-    }
+    // additional tests
+    test("21");
+    test("2147483647");
+    test("21474836472147483647");
+    test("0.76986795674567689");
+    test("hello");
     return (0);
 }
