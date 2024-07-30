@@ -6,20 +6,21 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <utility> // std::pair
-#include <stdexcept> // std::runtime_error
 #include <sstream> 
+
+#define DATABASE "data.csv"
 
 class BitcoinExchange
 {
 private:
-	// std::map<double, float> exchangeInfo;
-	std::vector<std::pair<std::string, std::vector<int> > > exchangeInfo;
-
-public:
+	std::map<std::string, float> exchangeInfo;
+	std::string inputData;
 	BitcoinExchange();
-	BitcoinExchange(std::string data);
+	BitcoinExchange(BitcoinExchange const &inputData);
+	BitcoinExchange &operator=(BitcoinExchange const &obj);
+public:
+	BitcoinExchange(std::string const &data);
 	~BitcoinExchange();
 };
 
-std::vector<std::pair<std::string, std::vector<int> > > read_csv(std::string filename);
+std::map<std::string, float> parseFile(const std::string& filename);
