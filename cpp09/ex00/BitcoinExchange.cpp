@@ -29,52 +29,80 @@ void BitcoinExchange::printConversion()
     std::string line;
     while (std::getline(infile, line))
     {
-        std::istringstream iss(line);
-        std::string date;
-        std::string valueStr;
-        // float value;
+        if (line.empty())
+            continue;
+        double value = 0;
+        try
+		{
+			checkInput(line, value);
+		}
+		catch(BadDateException& e)
+		{
+			std::cerr << e.what() << line << std::endl;
+			continue;
+		}
+		catch(NegativeNumberException& e)
+		{
+			std::cerr << e.what() << std::endl;
+			continue;
+		}
+		catch(NumberTooLargeException& e)
+		{
+			std::cerr << e.what() << std::endl;
+			continue;
+		}
+		printResult(line.substr(0, 10), value);
 
-        if (std::getline(iss, date, '|'))
-        {
-            date.erase(date.find_last_not_of(" \n\r\t") + 1);
-            date.erase(0, date.find_first_not_of(" \n\r\t"));
-
-            if (std::getline(iss, valueStr))
-            {
-                valueStr.erase(valueStr.find_last_not_of(" \n\r\t") + 1);
-                valueStr.erase(0, valueStr.find_first_not_of(" \n\r\t"));
-
-                std::cout << "DATE: " << date << std::endl;
-                std::cout << "VALUESTR: " << valueStr << std::endl;
-            }
-            else
-            {
-                std::cerr << "Error: bad input => " << line << std::endl;
-            }
-        }
-        else
-        {
-            // if (line == "date | value")
-            //     continue;
-            std::cerr << "here" << line << std::endl;
-        }
     }
 
     infile.close();
 }
 
-float BitcoinExchange::calculateResult(std::string date, float valueStr)
+void BitcoinExchange::printResult(std::string date, double value)
 {
-    std::map<std::string, float>::const_iterator it = exchangeInfo.find(date);
-    if (it != exchangeInfo.end())
-    {
-        return (it->second * valueStr);
-    }
-    return 555;
+    std::map<std::string, double>::iterator it = exchangeInfo.lower_bound(date);
+	if (exchangeInfo.find(date) == exchangeInfo.end()) {
+		if (it != exchangeInfo.begin())
+			it--;
+		double mult = (*it).second * value;
+		std::cout << date << " => " << value << " = " << mult << std::endl;
+	} else {
+		it = exchangeInfo.find(date);
+		double mult = (*it).second * value;
+		std::cout << date << " => " << value << " = " << mult << std::endl;
+	}
+}
+void BitcoinExchange::checkInput(std::string line, double &value)
+{
+    if (line.size() < 14 || line.substr(0, 10) == "2009-01-01")
+		throw BadDateException();
+
+	if (line.substr(10, 3) != " | ")
+		throw BadDateException();
+
+	line = line.substr(13, line.size() - 13);
+	char *end;
+	value = strtod(line.c_str(), &end);
+	if (*end)
+		throw BadDateException();
+
+	if (value <= 0)
+		throw NegativeNumberException();
+
+	if (value >+ 1000)
+		throw NumberTooLargeException();
+}
+const char *BitcoinExchange::BadDateException::what(void) const throw()
+{
+	return ("Error: bad input = > ");
 }
 
-void BitcoinExchange::printResult(std::string date, float valueStr)
+const char *BitcoinExchange::NegativeNumberException::what(void) const throw()
 {
-    float result = calculateResult(date, valueStr);
-    std::cout << date << " => " << valueStr << " = " << result << std::endl;
+	return ("Error: not a positive number.");
+}
+
+const char *BitcoinExchange::NumberTooLargeException::what(void) const throw()
+{
+	return ("Error: too large a number.");
 }

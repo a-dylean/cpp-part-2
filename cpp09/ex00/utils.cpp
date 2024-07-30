@@ -1,8 +1,8 @@
 #include "BitcoinExchange.hpp"
 
-std::map<std::string, float> parseFile(const std::string& filename) 
+std::map<std::string, double> parseFile(const std::string& filename) 
 {
-    std::map<std::string, float> datamap;
+    std::map<std::string, double> datamap;
     std::ifstream infile(filename.c_str());
     
     if (!infile) {
@@ -14,7 +14,7 @@ std::map<std::string, float> parseFile(const std::string& filename)
     while (std::getline(infile, line)) {
         std::istringstream iss(line);
         std::string date;
-        float value;
+        double value;
         
         if (std::getline(iss, date, ',') && (iss >> value)) {
             datamap[date] = value;
