@@ -27,7 +27,7 @@ public:
 	void printConversion();
 	void printResult(std::string date, double value);
 	void checkInput(std::string line, double &value);
-	class BadDateException : public std::exception
+	class BadInputException : public std::exception
 	{
 	public:
 		const char *what(void) const throw();
