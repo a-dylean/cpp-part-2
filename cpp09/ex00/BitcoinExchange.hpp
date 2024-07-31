@@ -10,6 +10,7 @@
 #include <cmath>
 #include <exception>
 #include <stdlib.h>
+#include <iomanip>
 
 #define DATABASE "data.csv"
 

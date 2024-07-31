@@ -56,15 +56,13 @@ void BitcoinExchange::printResult(std::string date, double value)
     {
         if (it != exchangeInfo.begin())
             it--;
-        double mult = (*it).second * value;
-        std::cout << date << " => " << value << " = " << mult << std::endl;
     }
     else
     {
         it = exchangeInfo.find(date);
-        double mult = (*it).second * value;
-        std::cout << date << " => " << value << " = " << mult << std::endl;
     }
+    double mult = (*it).second * value;
+    std::cout << std::fixed << std::setprecision(2) << date << " => " << value << " = " << mult << std::endl;
 }
 
 const char *BitcoinExchange::BadInputException::what(void) const throw()
@@ -95,7 +93,7 @@ void BitcoinExchange::checkInput(const std::string &line)
     {
         throw BadInputException();
     }
-    float value = std::atof(valueStr.c_str());
+    double value = std::atof(valueStr.c_str());
     if (value < 0)
     {
         throw NegativeNumberException();
