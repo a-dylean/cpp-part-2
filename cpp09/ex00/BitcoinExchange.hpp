@@ -17,18 +17,19 @@
 class BitcoinExchange
 {
 private:
+	BitcoinExchange();
+	BitcoinExchange(BitcoinExchange const &obj);
+	BitcoinExchange &operator=(BitcoinExchange const &obj);
 	std::map<std::string, double> exchangeInfo;
 	std::string inputData;
-	BitcoinExchange();
-	BitcoinExchange(BitcoinExchange const &inputData);
-	BitcoinExchange &operator=(BitcoinExchange const &obj);
-
+	double calculateResult(std::string date, double value);
+	void printResult(std::string date, double value, double result);
+	void convert(std::string const & line);
 public:
 	BitcoinExchange(std::string const &data);
 	~BitcoinExchange();
 	void printConversion();
-	void printResult(std::string date, double value);
-	void checkInput(std::string const & line);
+	
 	class BadInputException : public std::exception
 	{
 	public:

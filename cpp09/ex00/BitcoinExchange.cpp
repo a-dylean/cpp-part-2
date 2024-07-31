@@ -28,7 +28,7 @@ void BitcoinExchange::printConversion()
             continue;
         try
         {
-            checkInput(line);
+            convert(line);
         }
         catch (BadInputException &e)
         {
@@ -49,38 +49,7 @@ void BitcoinExchange::printConversion()
     infile.close();
 }
 
-void BitcoinExchange::printResult(std::string date, double value)
-{
-    std::map<std::string, double>::iterator it = exchangeInfo.lower_bound(date);
-    if (exchangeInfo.find(date) == exchangeInfo.end())
-    {
-        if (it != exchangeInfo.begin())
-            it--;
-    }
-    else
-    {
-        it = exchangeInfo.find(date);
-    }
-    double mult = (*it).second * value;
-    std::cout << std::fixed << std::setprecision(2) << date << " => " << value << " = " << mult << std::endl;
-}
-
-const char *BitcoinExchange::BadInputException::what(void) const throw()
-{
-    return ("Error: bad input = > ");
-}
-
-const char *BitcoinExchange::NegativeNumberException::what(void) const throw()
-{
-    return ("Error: not a positive number.");
-}
-
-const char *BitcoinExchange::NumberTooLargeException::what(void) const throw()
-{
-    return ("Error: too large a number.");
-}
-
-void BitcoinExchange::checkInput(const std::string &line)
+void BitcoinExchange::convert(const std::string &line)
 {
     std::size_t separator = line.find(" | ");
     if (separator == std::string::npos)
@@ -102,5 +71,40 @@ void BitcoinExchange::checkInput(const std::string &line)
     {
         throw NumberTooLargeException();
     }
-    printResult(date, value);
+    printResult(date, value, calculateResult(date, value));
+}
+double BitcoinExchange::calculateResult(std::string date, double value)
+{
+    std::map<std::string, double>::iterator it = exchangeInfo.lower_bound(date);
+    if (exchangeInfo.find(date) == exchangeInfo.end())
+    {
+        if (it != exchangeInfo.begin())
+            it--;
+    }
+    else
+    {
+        it = exchangeInfo.find(date);
+    }
+    double mult = (*it).second * value;
+    return mult;
+}
+
+void BitcoinExchange::printResult(std::string date, double value, double result)
+{
+    std::cout << std::fixed << std::setprecision(2) << date << " => " << value << " = " << result << std::endl;
+}
+
+const char *BitcoinExchange::BadInputException::what(void) const throw()
+{
+    return ("Error: bad input = > ");
+}
+
+const char *BitcoinExchange::NegativeNumberException::what(void) const throw()
+{
+    return ("Error: not a positive number.");
+}
+
+const char *BitcoinExchange::NumberTooLargeException::what(void) const throw()
+{
+    return ("Error: too large a number.");
 }
