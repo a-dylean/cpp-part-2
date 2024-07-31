@@ -1,4 +1,4 @@
-NAME	= exec
+NAME	=  PmergeMe
 
 CC		= c++
 
