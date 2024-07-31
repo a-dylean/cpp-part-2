@@ -9,6 +9,7 @@
 #include <sstream>
 #include <cmath>
 #include <exception>
+#include <stdlib.h>
 
 #define DATABASE "data.csv"
 
@@ -26,7 +27,7 @@ public:
 	~BitcoinExchange();
 	void printConversion();
 	void printResult(std::string date, double value);
-	void checkInput(std::string line, double &value);
+	void checkInput(std::string const & line);
 	class BadInputException : public std::exception
 	{
 	public:
@@ -47,5 +48,4 @@ public:
 };
 
 std::map<std::string, double> parseFile(const std::string &filename);
-bool isValidValue(const std::string &valueStr, float &value);
-bool isValidDate(const std::string &date);
+bool isValidDate(std::string date);

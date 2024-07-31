@@ -1,17 +1,12 @@
 #include "BitcoinExchange.hpp"
 
 BitcoinExchange::BitcoinExchange() {
-
 };
 
 BitcoinExchange::BitcoinExchange(std::string const &data)
 {
     inputData = data;
     exchangeInfo = parseFile(DATABASE);
-    // for (std::map<std::string, float>::iterator it = exchangeInfo.begin(); it != exchangeInfo.end(); ++it) {
-    // std::cout << "Date: " << it->first << ", Exchange Rate: " << it->second << std::endl;
-    // }
-    // std::cout << inputData << std::endl;
 }
 
 BitcoinExchange::~BitcoinExchange() {};
@@ -29,12 +24,11 @@ void BitcoinExchange::printConversion()
     std::string line;
     while (std::getline(infile, line))
     {
-        if (line.empty())
+        if (line.empty() || line == "date | value")
             continue;
-        double value = 0;
         try
         {
-            checkInput(line, value);
+            checkInput(line);
         }
         catch (BadInputException &e)
         {
@@ -51,9 +45,7 @@ void BitcoinExchange::printConversion()
             std::cerr << e.what() << std::endl;
             continue;
         }
-        printResult(line.substr(0, 10), value);
     }
-
     infile.close();
 }
 
@@ -74,38 +66,7 @@ void BitcoinExchange::printResult(std::string date, double value)
         std::cout << date << " => " << value << " = " << mult << std::endl;
     }
 }
-// changes checks for each line here
-// + add separate printing finctions and validating functions
-void BitcoinExchange::checkInput(std::string line, double &value)
-{
-    std::istringstream iss(line);
-    std::string date;
 
-    if (std::getline(iss, date, '|'))
-    {
-        if (line.size() < 14 || line.substr(0, 10) == "2009-01-01")
-            throw BadInputException();
-
-        if (line.substr(10, 3) != " | ")
-            throw BadInputException();
-
-        line = line.substr(13, line.size() - 13);
-        char *end;
-        value = strtod(line.c_str(), &end);
-        if (*end)
-            throw BadInputException();
-
-        if (value <= 0)
-            throw NegativeNumberException();
-
-        if (value > +1000)
-            throw NumberTooLargeException();
-    }
-    else
-    {
-        throw BadInputException();
-    }
-}
 const char *BitcoinExchange::BadInputException::what(void) const throw()
 {
     return ("Error: bad input = > ");
@@ -119,4 +80,29 @@ const char *BitcoinExchange::NegativeNumberException::what(void) const throw()
 const char *BitcoinExchange::NumberTooLargeException::what(void) const throw()
 {
     return ("Error: too large a number.");
+}
+
+void BitcoinExchange::checkInput(const std::string &line)
+{
+    std::size_t separator = line.find(" | ");
+    if (separator == std::string::npos)
+    {
+        throw BadInputException();
+    }
+    std::string date = line.substr(0, separator);
+    std::string valueStr = line.substr(separator + 3);
+    if (!isValidDate(date))
+    {
+        throw BadInputException();
+    }
+    float value = std::atof(valueStr.c_str());
+    if (value < 0)
+    {
+        throw NegativeNumberException();
+    }
+    else if (value > 1000)
+    {
+        throw NumberTooLargeException();
+    }
+    printResult(date, value);
 }
