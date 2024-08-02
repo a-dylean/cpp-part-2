@@ -7,7 +7,7 @@ int main(int argc, char **argv)
         calculateRNP(argv[1]);
         return 0;
     }
-    std::cout << "Wrong input! Usage: ./RNP [inverted Polish mathematical expression]" << std::endl;
+    std::cout << "Invalid input! Usage: ./RNP [inverted Polish mathematical expression]" << std::endl;
     return 1;
 
 }

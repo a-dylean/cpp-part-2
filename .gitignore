@@ -5,6 +5,8 @@ serializer
 base
 exec
 btc
+RPN
+PmergeMe
 *.o
 *.d
 .vscode

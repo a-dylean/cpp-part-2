@@ -61,7 +61,7 @@ void inputCheck(const std::string &token)
     {
         if (!std::isdigit(static_cast<unsigned char>(token[i])))
         {
-            throw std::invalid_argument("wrong char");
+            throw std::invalid_argument("expression contains wrong char");
         }
     }
 }
@@ -100,7 +100,7 @@ void calculateRNP(const std::string &input)
     }
     catch (std::exception &e)
     {
-        std::cout << "Error" << std::endl;
+        std::cout << "Error: " << e.what() << std::endl;
     }
     ss.clear();
 };
