@@ -43,28 +43,88 @@ void populate(T &arr, int argc, char **argv)
         arr.push_back(strToInt(argv[i]));
     }
 }
-template <typename T>
-void sortPair(T &arr, int i, int j)
-{
-    if (arr[i] > arr[j])
-        std::swap(arr[i], arr[j]);
-}
-template <typename T>
-void sortLastNumber(T &arr)
-{
-    int lastNumber = arr.back();
-    arr.pop_back();
-    size_t i;
-    for (i = 0; i < arr.size(); i++)
-    {
-        if (lastNumber < arr[i])
-        {
-            arr.insert(arr.begin() + i, lastNumber);
-            break;
-        }
-    }
-    if (i == (arr.size())) //remove ?
-        arr.push_back(lastNumber);
-}
+// template <typename T>
+// void sortPair(T &arr, int i, int j)
+// {
+//     if (arr[i] > arr[j])
+//         std::swap(arr[i], arr[j]);
+// }
+// template <typename T>
+// void sortLastNumber(T &arr)
+// {
+//     int lastNumber = arr.back();
+//     arr.pop_back();
+//     size_t i;
+//     for (i = 0; i < arr.size(); i++)
+//     {
+//         if (lastNumber < arr[i])
+//         {
+//             arr.insert(arr.begin() + i, lastNumber);
+//             break;
+//         }
+//     }
+//     if (i == (arr.size())) //remove ?
+//         arr.push_back(lastNumber);
+// }
 
 void displaySort(int argc, char **argv);
+
+template <typename Container>
+void sortPair(Container &container, size_t index1, size_t index2) {
+    if (container[index1] > container[index2]) {
+        std::swap(container[index1], container[index2]);
+    }
+}
+
+template <typename Container>
+void recursiveSort(Container &container, size_t start, size_t end) {
+    if (end - start <= 1) return;
+
+    size_t mid = start + (end - start) / 2;
+    recursiveSort(container, start, mid);
+    recursiveSort(container, mid, end);
+
+    // Merge the two halves using binary insertion
+    Container merged;
+    typename Container::iterator it1 = container.begin() + start;
+    typename Container::iterator it2 = container.begin() + mid;
+
+    while (it1 != container.begin() + mid && it2 != container.begin() + end) {
+        if (*it1 < *it2) {
+            merged.push_back(*it1++);
+        } else {
+            merged.push_back(*it2++);
+        }
+    }
+
+    while (it1 != container.begin() + mid) {
+        merged.push_back(*it1++);
+    }
+
+    while (it2 != container.begin() + end) {
+        merged.push_back(*it2++);
+    }
+
+    std::copy(merged.begin(), merged.end(), container.begin() + start);
+}
+
+template <typename Container>
+void sortVec(Container &container) {
+    typedef typename Container::value_type ValueType;
+
+    // Step 1: Pairwise comparison
+    for (size_t i = 0; i < container.size() - 1; i += 2) {
+        sortPair(container, i, i + 1);
+    }
+
+    // Step 2: Recursive sort
+    recursiveSort(container, 0, container.size());
+
+    // Step 3: Handle odd-sized container
+    if (container.size() % 2 != 0) {
+        ValueType lastNumber = container.back();
+        container.pop_back();
+        typename Container::iterator pos = std::lower_bound(container.begin(), container.end(), lastNumber);
+        container.insert(pos, lastNumber);
+    }
+}
