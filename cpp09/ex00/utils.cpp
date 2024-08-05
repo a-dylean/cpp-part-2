@@ -41,23 +41,23 @@ bool isValidDate(std::string date)
     int day = atoi(date.substr(8, 2).c_str());
     if (month < 1 || month > 12 || day < 1)
         return false;
-    int maxDay;
+    int maxDays;
     switch (month)
     {
     case 2:
-        maxDay = 28;
+        maxDays = 28;
         if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
-            maxDay = 29;
+            maxDays = 29;
         break;
     case 4:
     case 6:
     case 9:
     case 11:
-        maxDay = 30;
+        maxDays = 30;
         break;
     default:
-        maxDay = 31;
+        maxDays = 31;
         break;
     }
-    return day <= maxDay;
+    return day <= maxDays;
 }
