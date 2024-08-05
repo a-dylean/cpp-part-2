@@ -10,6 +10,7 @@
 #include <typeinfo>
 #include <deque>
 #include <iomanip>
+#include <climits>
 
 int strToInt(const std::string &str);
 
@@ -33,15 +34,18 @@ void printTime(std::clock_t start, std::clock_t end, int argc, T &container)
     name.erase(name.size() - 8);
     std::cout << "Time to process a range of " << (argc - 1) << " elements with std::" << name << ":  " << std::fixed << std::setprecision(5) << duration << " ms" << std::endl;
 }
-//add checks for faulty values to populate()
 
 template <typename T>
 void populate(T &arr, int argc, char **argv)
 {
     for (int i = 1; i < argc; ++i)
     {
-        if (strToInt(argv[i]) < 1)
-            throw std::invalid_argument("array contains negative number or 0");
+        std::string str(argv[i]);
+		if (str.find_first_not_of("-0123456789") != str.npos)
+			throw std::invalid_argument("invalid input: not a number");
+		double value = strtod(argv[i], 0);
+		if (value > INT_MAX || value < 1)
+            throw std::invalid_argument("invalid input: negavite number or 0");
         arr.push_back(strToInt(argv[i]));
     }
 }
