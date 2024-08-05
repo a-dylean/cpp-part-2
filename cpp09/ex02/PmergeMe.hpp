@@ -33,6 +33,8 @@ void printTime(std::clock_t start, std::clock_t end, int argc, T &container)
     name.erase(name.size() - 8);
     std::cout << "Time to process a range of " << (argc - 1) << " elements with std::" << name << ":  " << std::fixed << std::setprecision(5) << duration << " ms" << std::endl;
 }
+//add checks for faulty values to populate()
+
 template <typename T>
 void populate(T &arr, int argc, char **argv)
 {
@@ -83,9 +85,14 @@ void recursiveSort(Container &container, size_t start, size_t end) {
     size_t mid = start + (end - start) / 2;
     recursiveSort(container, start, mid);
     recursiveSort(container, mid, end);
+}
+
+template <typename Container>
+void binaryInsertion(Container &container, size_t start, size_t end) {
 
     // Merge the two halves using binary insertion
     Container merged;
+    size_t mid = start + (end - start) / 2;
     typename Container::iterator it1 = container.begin() + start;
     typename Container::iterator it2 = container.begin() + mid;
 
@@ -111,7 +118,6 @@ void recursiveSort(Container &container, size_t start, size_t end) {
 template <typename Container>
 void sortVec(Container &container) {
     typedef typename Container::value_type ValueType;
-
     // Step 1: Pairwise comparison
     for (size_t i = 0; i < container.size() - 1; i += 2) {
         sortPair(container, i, i + 1);
@@ -119,7 +125,7 @@ void sortVec(Container &container) {
 
     // Step 2: Recursive sort
     recursiveSort(container, 0, container.size());
-
+    binaryInsertion(container, 0, container.size());
     // Step 3: Handle odd-sized container
     if (container.size() % 2 != 0) {
         ValueType lastNumber = container.back();
