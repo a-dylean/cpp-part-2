@@ -11,10 +11,17 @@
 #include <deque>
 #include <iomanip>
 #include <climits>
+#include <utility>
 
+const std::size_t SequenceSize[33] = {
+    0, 1, 1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461,
+    10923, 21845, 43691, 87381, 174763, 349525, 699051, 1398101,
+    2796203, 5592405, 11184811, 22369621, 44739243, 89478485,
+    178956971, 357913941, 715827883, 1431655765};
 int strToInt(const std::string &str);
-
+void displaySort(int argc, char **argv);
 typedef std::vector<int>::iterator iterator;
+std::pair<size_t, size_t> makePairs(std::size_t n);
 
 template <typename T>
 void printArr(std::string str, T &arr)
@@ -28,11 +35,11 @@ void printArr(std::string str, T &arr)
 template <typename T>
 void printTime(std::clock_t start, std::clock_t end, int argc, T &container)
 {
-    double duration = 1000.0 * (end - start) / CLOCKS_PER_SEC;
+    double duration = 1000000.0 * static_cast<double>(end - start) / CLOCKS_PER_SEC;
     std::string name = typeid(container).name();
     name.erase(0, 3);
     name.erase(name.size() - 8);
-    std::cout << "Time to process a range of " << (argc - 1) << " elements with std::" << name << ":  " << std::fixed << std::setprecision(5) << duration << " ms" << std::endl;
+    std::cout << "Time to process a range of " << (argc - 1) << " elements with std::" << name << ":  " << std::fixed << std::setprecision(2) << duration << " us" << std::endl;
 }
 
 template <typename T>
@@ -41,100 +48,108 @@ void populate(T &arr, int argc, char **argv)
     for (int i = 1; i < argc; ++i)
     {
         std::string str(argv[i]);
-		if (str.find_first_not_of("-0123456789") != str.npos)
-			throw std::invalid_argument("invalid input: not a number");
-		double value = strtod(argv[i], 0);
-		if (value > INT_MAX || value < 1)
+        if (str.find_first_not_of("-0123456789") != str.npos)
+            throw std::invalid_argument("invalid input: not a number");
+        double value = strtod(argv[i], 0);
+        if (value > INT_MAX || value < 1)
             throw std::invalid_argument("invalid input: negavite number or 0");
         arr.push_back(strToInt(argv[i]));
     }
 }
-// template <typename T>
-// void sortPair(T &arr, int i, int j)
-// {
-//     if (arr[i] > arr[j])
-//         std::swap(arr[i], arr[j]);
-// }
-// template <typename T>
-// void sortLastNumber(T &arr)
-// {
-//     int lastNumber = arr.back();
-//     arr.pop_back();
-//     size_t i;
-//     for (i = 0; i < arr.size(); i++)
-//     {
-//         if (lastNumber < arr[i])
-//         {
-//             arr.insert(arr.begin() + i, lastNumber);
-//             break;
-//         }
-//     }
-//     if (i == (arr.size())) //remove ?
-//         arr.push_back(lastNumber);
-// }
-
-void displaySort(int argc, char **argv);
 
 template <typename Container>
-void sortPair(Container &container, size_t index1, size_t index2) {
-    if (container[index1] > container[index2]) {
-        std::swap(container[index1], container[index2]);
+Container setJakobSeqV(size_t n)
+{
+    if (n < 2)
+    {
+        throw std::invalid_argument("n must be greater than 1");
     }
+
+    Container jSeq;
+    std::pair<size_t, size_t> pair = makePairs(n);
+    if (pair.first > pair.second)
+    {
+        std::swap(pair.first, pair.second);
+    }
+
+    for (size_t i = 0; i < pair.second; ++i)
+    {
+        jSeq.push_back(i);
+    }
+
+    return jSeq;
 }
 
 template <typename Container>
-void recursiveSort(Container &container, size_t start, size_t end) {
-    if (end - start <= 1) return;
+void mergeVector(Container &arr, int left, int mid, int right)
+{
+    size_t n1 = mid - left + 1;
+    size_t n2 = right - mid;
 
-    size_t mid = start + (end - start) / 2;
-    recursiveSort(container, start, mid);
-    recursiveSort(container, mid, end);
-}
+    Container L(arr.begin() + left, arr.begin() + mid + 1);
+    Container R(arr.begin() + mid + 1, arr.begin() + right + 1);
 
-template <typename Container>
-void binaryInsertion(Container &container, size_t start, size_t end) {
+    Container jakobSeq = setJakobSeqV<Container>(n1 + n2);
+    size_t idx = 0;
 
-    // Merge the two halves using binary insertion
-    Container merged;
-    size_t mid = start + (end - start) / 2;
-    typename Container::iterator it1 = container.begin() + start;
-    typename Container::iterator it2 = container.begin() + mid;
+    size_t i = 0, j = 0;
+    size_t k = left; // Start merging from the original 'left' index
 
-    while (it1 != container.begin() + mid && it2 != container.begin() + end) {
-        if (*it1 < *it2) {
-            merged.push_back(*it1++);
-        } else {
-            merged.push_back(*it2++);
+    while (i < n1 && j < n2)
+    {
+        size_t a = jakobSeq[idx++];
+        size_t b = jakobSeq[idx++];
+
+        for (size_t count = a; count <= b; ++count)
+        {
+            if (i < n1 && j < n2)
+            {
+                if (L[i] <= R[j])
+                {
+                    arr[k++] = L[i++];
+                }
+                else
+                {
+                    arr[k++] = R[j++];
+                }
+            }
+            else if (i < n1)
+            {
+                arr[k++] = L[i++];
+            }
+            else if (j < n2)
+            {
+                arr[k++] = R[j++];
+            }
         }
     }
 
-    while (it1 != container.begin() + mid) {
-        merged.push_back(*it1++);
+    // Copy remaining elements of L and R if any
+    while (i < n1)
+    {
+        arr[k++] = L[i++];
     }
-
-    while (it2 != container.begin() + end) {
-        merged.push_back(*it2++);
+    while (j < n2)
+    {
+        arr[k++] = R[j++];
     }
-
-    std::copy(merged.begin(), merged.end(), container.begin() + start);
+}
+template <typename Container>
+void insertVector(Container &arr, int left, int right)
+{
+    if (left < right)
+    {
+        int mid = left + (right - left) / 2;
+        insertVector(arr, left, mid);
+        insertVector(arr, mid + 1, right);
+        mergeVector(arr, left, mid, right);
+    }
 }
 
 template <typename Container>
-void sortVec(Container &container) {
-    typedef typename Container::value_type ValueType;
-    // Step 1: Pairwise comparison
-    for (size_t i = 0; i < container.size() - 1; i += 2) {
-        sortPair(container, i, i + 1);
-    }
-
-    // Step 2: Recursive sort
-    recursiveSort(container, 0, container.size());
-    binaryInsertion(container, 0, container.size());
-    // Step 3: Handle odd-sized container
-    if (container.size() % 2 != 0) {
-        ValueType lastNumber = container.back();
-        container.pop_back();
-        typename Container::iterator pos = std::lower_bound(container.begin(), container.end(), lastNumber);
-        container.insert(pos, lastNumber);
-    }
+void fordJohnsonSortVector(Container &arr)
+{
+    if (arr.size() < 2)
+        return;
+    insertVector(arr, 0, arr.size() - 1);
 }
