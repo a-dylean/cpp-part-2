@@ -9,16 +9,12 @@ int strToInt(const std::string &str)
 }
 std::pair<size_t, size_t> makePairs(std::size_t n)
 {
-    if (n < 2)
-    {
-        throw std::invalid_argument("n must be greater than 1");
-    }
     for (size_t i = 1; i < 33; i++)
     {
-        if (n < SequenceSize[i])
-            return std::make_pair(SequenceSize[i - 1], SequenceSize[i]);
+        if (n < jacobsthalNum[i])
+            return std::make_pair(jacobsthalNum[i - 1], jacobsthalNum[i]);
     }
-    throw std::out_of_range("n is too large to find a pair in SequenceSize array");
+    throw std::out_of_range("n is too large to find a pair in Jacobsthal numbers");
 }
 
 void displaySort(int argc, char **argv)
@@ -27,7 +23,7 @@ void displaySort(int argc, char **argv)
     std::clock_t startVec = std::clock();
     try
     {
-        populate(vec, argc, argv);
+        populateArr(vec, argc, argv);
     }
     catch (std::exception &e)
     {
@@ -37,7 +33,7 @@ void displaySort(int argc, char **argv)
     printArr("Before", vec);
     try
     {
-        fordJohnsonSortVector(vec);
+        mergeInsertSort(vec);
     }
     catch (std::exception &e)
     {
@@ -51,7 +47,7 @@ void displaySort(int argc, char **argv)
     std::clock_t startDec = std::clock();
     try 
     {
-        populate(dec, argc, argv);
+        populateArr(dec, argc, argv);
     }
     catch (std::exception &e)
     {
@@ -60,7 +56,7 @@ void displaySort(int argc, char **argv)
     }
     try
     {
-        fordJohnsonSortVector(dec);
+        mergeInsertSort(dec);
     }
     catch (std::exception &e)
     {

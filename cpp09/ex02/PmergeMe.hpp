@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <deque>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
@@ -8,19 +9,17 @@
 #include <stdexcept>
 #include <ctime>
 #include <typeinfo>
-#include <deque>
 #include <iomanip>
 #include <climits>
-#include <utility>
 
-const std::size_t SequenceSize[33] = {
+const std::size_t jacobsthalNum[33] = {
     0, 1, 1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, 5461,
     10923, 21845, 43691, 87381, 174763, 349525, 699051, 1398101,
     2796203, 5592405, 11184811, 22369621, 44739243, 89478485,
     178956971, 357913941, 715827883, 1431655765};
+typedef std::vector<int>::iterator iterator;
 int strToInt(const std::string &str);
 void displaySort(int argc, char **argv);
-typedef std::vector<int>::iterator iterator;
 std::pair<size_t, size_t> makePairs(std::size_t n);
 
 template <typename T>
@@ -43,7 +42,7 @@ void printTime(std::clock_t start, std::clock_t end, int argc, T &container)
 }
 
 template <typename T>
-void populate(T &arr, int argc, char **argv)
+void populateArr(T &arr, int argc, char **argv)
 {
     for (int i = 1; i < argc; ++i)
     {
@@ -52,7 +51,7 @@ void populate(T &arr, int argc, char **argv)
             throw std::invalid_argument("invalid input: not a number");
         double value = strtod(argv[i], 0);
         if (value > INT_MAX || value < 1)
-            throw std::invalid_argument("invalid input: negavite number or 0");
+            throw std::invalid_argument("invalid input: not within INT range, negavite number or 0");
         arr.push_back(strToInt(argv[i]));
     }
 }
@@ -60,11 +59,6 @@ void populate(T &arr, int argc, char **argv)
 template <typename Container>
 Container setJakobSeqV(size_t n)
 {
-    if (n < 2)
-    {
-        throw std::invalid_argument("n must be greater than 1");
-    }
-
     Container jSeq;
     std::pair<size_t, size_t> pair = makePairs(n);
     if (pair.first > pair.second)
@@ -76,7 +70,6 @@ Container setJakobSeqV(size_t n)
     {
         jSeq.push_back(i);
     }
-
     return jSeq;
 }
 
@@ -91,8 +84,8 @@ void mergeVector(Container &arr, int left, int mid, int right)
 
     Container jakobSeq = setJakobSeqV<Container>(n1 + n2);
     size_t idx = 0;
-
-    size_t i = 0, j = 0;
+    size_t i = 0;
+    size_t j = 0;
     size_t k = left; // Start merging from the original 'left' index
 
     while (i < n1 && j < n2)
@@ -123,7 +116,6 @@ void mergeVector(Container &arr, int left, int mid, int right)
             }
         }
     }
-
     // Copy remaining elements of L and R if any
     while (i < n1)
     {
@@ -147,7 +139,7 @@ void insertVector(Container &arr, int left, int right)
 }
 
 template <typename Container>
-void fordJohnsonSortVector(Container &arr)
+void mergeInsertSort(Container &arr)
 {
     if (arr.size() < 2)
         return;
