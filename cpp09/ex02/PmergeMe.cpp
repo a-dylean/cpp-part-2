@@ -1,6 +1,6 @@
 #include "PmergeMe.hpp"
 
-bool debug_mode = true;
+bool debug_mode = false;
 
 void checkInput(int argc, char **argv)
 {
@@ -17,7 +17,7 @@ void checkInput(int argc, char **argv)
 
 void displaySort(int argc, char **argv)
 {
-    std::vector<int> jacobsthal;
+    std::vector<int> jacobsthalNums;
     std::vector<int> vec;
     std::deque<int> dec;
     try
@@ -31,8 +31,8 @@ void displaySort(int argc, char **argv)
     }
     populateArr(vec, argc, argv);
     populateArr(dec, argc, argv);
-    jacobsthal = populateJacob(vec);
+    jacobsthalNums = populateJacob(vec);
     printArr("Before: ", vec);
-    runSort(vec, jacobsthal, argc);
-    runSort(dec, jacobsthal, argc);
+    runSort(vec, jacobsthalNums, argc);
+    runSort(dec, jacobsthalNums, argc);
 }

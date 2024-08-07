@@ -12,76 +12,77 @@
 #include <iomanip>
 #include <climits>
 
+extern bool debug_mode;
 void checkInput(int argc, char **argv);
 void displaySort(int argc, char **argv);
-extern bool debug_mode;
 
-template <typename ContainerMain>
-void populateArr(ContainerMain &vec, int argc, char **argv)
+template <typename C>
+void populateArr(C &arr, int argc, char **argv)
 {
     for (int i = 1; i < argc; i++)
     {
-        vec.push_back(std::atoi(argv[i]));
+        arr.push_back(std::atoi(argv[i]));
     }
 }
 
-template <typename ContainerMain>
-void printArr(std::string str, ContainerMain &vec)
+template <typename C>
+void printArr(std::string str, C &arr)
 {
     std::cout << str << std::flush;
-    for (typename ContainerMain::iterator it = vec.begin(); it != vec.end(); it++)
+    for (typename C::iterator it = arr.begin(); it != arr.end(); it++)
     {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
 }
 
-template <typename T>
-void printTime(std::clock_t start, std::clock_t end, int argc, T &container)
+template <typename C>
+void printTime(std::clock_t start, std::clock_t end, int argc, C &arr)
 {
     double duration = 1000000.0 * static_cast<double>(end - start) / CLOCKS_PER_SEC;
-    std::string name = typeid(container).name();
+    std::string name = typeid(arr).name();
     name.erase(0, 3);
     name.erase(name.size() - 8);
     std::cout << "Time to process a range of " << (argc - 1) << " elements with std::" << name << ":  " << std::fixed << std::setprecision(2) << duration << " us" << std::endl;
 }
 // Recursive function to sort all the pairs by the lager element of the pair
 template <typename P>
-void sortPairs(P &p, size_t i)
+void sortPairs(P &pairs, size_t i)
 {
-    if (i == p.size())
+    if (i == pairs.size())
         return;
-    for (size_t j = i + 1; j < p.size(); j++)
+    for (size_t j = i + 1; j < pairs.size(); j++)
     {
-        if (p[i].second > p[j].second)
+        if (pairs[i].second > pairs[j].second)
         {
-            std::pair<int, int> tmp = p[i];
-            p[i] = p[j];
-            p[j] = tmp;
+            std::pair<int, int> tmp = pairs[i];
+            pairs[i] = pairs[j];
+            pairs[j] = tmp;
         }
     }
-    sortPairs(p, i + 1);
+    sortPairs(pairs, i + 1);
 }
 
 template <typename P>
-void printPairs(P &p)
+void printPairs(P &pairs)
 {
     if (debug_mode)
     {
-        std::cout << "\nPairs:\n";
+        std::cout << "\nPairs:\n"
+                  << std::flush;
         int i = 0;
-        for (typename P::iterator it = p.begin(); it != p.end(); it++)
+        for (typename P::iterator it = pairs.begin(); it != pairs.end(); it++)
             std::cout << "[" << i++ << "] " << "(" << it->first << "\t; " << it->second << ") " << std::endl;
     }
 }
 
 template <typename C>
-void printContainer(C &c)
+void printContainer(C &arr)
 {
     if (debug_mode)
     {
         std::cout << "\nContainer:\n";
-        for (typename C::iterator it = c.begin(); it != c.end(); it++)
+        for (typename C::iterator it = arr.begin(); it != arr.end(); it++)
             std::cout << *it << " ";
         std::cout << std::endl;
     }
@@ -89,26 +90,26 @@ void printContainer(C &c)
 
 // Recursive function to insert
 template <typename C>
-void binarySearchInsert(C &c, size_t low, size_t high, int value)
+void binarySearchInsert(C &arr, size_t low, size_t high, int value)
 {
     // Find mid value
     size_t mid = low + (high - low) / 2;
     if (low == high)
     {
-        c.insert(c.begin() + mid, value);
+        arr.insert(arr.begin() + mid, value);
         return;
     }
-    if (value < c[mid])
-        binarySearchInsert(c, low, mid, value);
+    if (value < arr[mid])
+        binarySearchInsert(arr, low, mid, value);
     else
-        binarySearchInsert(c, mid + 1, high, value);
+        binarySearchInsert(arr, mid + 1, high, value);
 }
 
 template <typename C>
-size_t findIndex(C &c, int value)
+size_t findIndex(C &arr, int value)
 {
     size_t i = 0;
-    for (typename C::iterator it = c.begin(); it != c.end(); it++)
+    for (typename C::iterator it = arr.begin(); it != arr.end(); it++)
     {
         if (*it == value)
             return i;
@@ -119,27 +120,28 @@ size_t findIndex(C &c, int value)
 }
 
 template <typename C, typename P>
-void startBinarySearchInsert(C &c, P &p, size_t k)
+void startBinarySearchInsert(C &arr, P &pairs, size_t index)
 {
-    int value = p[k].first;
+    int value = pairs[index].first;
     size_t low = 0;
-    size_t high = findIndex(c, value);
-    binarySearchInsert(c, low, high, value);
+    size_t high = findIndex(arr, value);
+    binarySearchInsert(arr, low, high, value);
 }
 
 template <typename C>
-void mergeInsertSort(C &c, std::vector<int> jacobsthal)
+void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
 {
     std::vector<std::pair<int, int> > pairs;
+    std::vector<std::pair<int, int> >::iterator it;
     // 1. Group by pairs
     int a = 0;
     int b = 0;
     long leftover = -1;
-    for (typename C::iterator it = c.begin(); it != c.end(); it++)
+    for (typename C::iterator it = arr.begin(); it != arr.end(); it++)
     {
         a = *it;
         it++;
-        if (it == c.end())
+        if (it == arr.end())
         {
             leftover = a;
             break;
@@ -150,7 +152,7 @@ void mergeInsertSort(C &c, std::vector<int> jacobsthal)
     printPairs(pairs);
 
     // 2. Sort the pairs in place
-    for (std::vector<std::pair<int, int> >::iterator it = pairs.begin(); it != pairs.end(); it++)
+    for (it = pairs.begin(); it != pairs.end(); it++)
     {
         if (it->first > it->second)
         {
@@ -164,75 +166,74 @@ void mergeInsertSort(C &c, std::vector<int> jacobsthal)
     printPairs(pairs);
 
     // 4. Add the lowest pair member to the container
-    c.clear();
-    c.push_back(pairs.begin()->first);
+    arr.clear();
+    arr.push_back(pairs.begin()->first);
 
     // 5. Add the bigger (second) values of the pairs to the container
-    for (std::vector<std::pair<int, int> >::iterator it = pairs.begin(); it != pairs.end(); it++)
-        c.push_back(it->second);
+    for (it = pairs.begin(); it != pairs.end(); it++)
+        arr.push_back(it->second);
 
     // 6. add the leftover to the pairs
     if (leftover != -1)
         pairs.push_back(std::make_pair(leftover, 0));
     printPairs(pairs);
-    printContainer(c);
+    printContainer(arr);
 
     // insert the paried values in the container
-    bool done = false;
+    bool sorted = false;
     size_t jIndex = 1;
-    size_t jPrev = jacobsthal[jIndex - 1];
+    size_t jPrev = jacobsthalNums[jIndex - 1];
     size_t k;
-    while (!done)
+    while (!sorted)
     {
         if (debug_mode)
-            std::cout << "Next Jacobsthal number: " << jacobsthal[jIndex] << "\n";
+            std::cout << "Next jacobsthal number: " << jacobsthalNums[jIndex] << std::endl;
         // Insert the next paired number following the
         // Jaconsthal numberindex
-        k = jacobsthal[jIndex];
+        k = jacobsthalNums[jIndex];
         if (k >= pairs.size() - 1)
         {
             k = pairs.size() - 1;
-            done = true;
+            sorted = true;
         }
-        // Insert backwards down to the previous Jacobsthal number
+        // Insert backwards down to the previous jacobsthalNums number
         while (k > jPrev)
         {
-            startBinarySearchInsert(c, pairs, k);
-            printContainer(c);
+            startBinarySearchInsert(arr, pairs, k);
+            printContainer(arr);
             k--;
         }
-
-        // Increment the Jacobsthal index
-        jPrev = jacobsthal[jIndex];
+        // Increment the jacobsthalNums index
+        jPrev = jacobsthalNums[jIndex];
         jIndex++;
     }
 };
-// Populate the Jacobsthal Sequence
-template <typename ContainerMain>
-std::vector<int> populateJacob(ContainerMain &vec)
+// Populate the jacobsthalNums Sequence
+template <typename C>
+std::vector<int> populateJacob(C &arr)
 {
-    std::vector<int> jacobsthal;
-    jacobsthal.push_back(0);
-    jacobsthal.push_back(1);
-    jacobsthal.push_back(3);
-    for (int i = 3; i < static_cast<int>(vec.size()); i++)
-        jacobsthal.push_back(jacobsthal[i - 1] + 2 * jacobsthal[i - 2]);
+    std::vector<int> jacobsthalNums;
+    jacobsthalNums.push_back(0);
+    jacobsthalNums.push_back(1);
+    jacobsthalNums.push_back(3);
+    for (int i = 3; i < static_cast<int>(arr.size()); i++)
+        jacobsthalNums.push_back(jacobsthalNums[i - 1] + 2 * jacobsthalNums[i - 2]);
     if (debug_mode)
     {
-        std::cout << "Jacobsthal Sequence:\t";
-        for (std::vector<int>::iterator it = jacobsthal.begin(); it != jacobsthal.end(); it++)
+        std::cout << "Jacobsthal numbers sequence:\t";
+        for (std::vector<int>::iterator it = jacobsthalNums.begin(); it != jacobsthalNums.end(); it++)
             std::cout << *it << " ";
     }
-    return jacobsthal;
+    return jacobsthalNums;
 }
 
-template <typename ContainerMain>
-void runSort(ContainerMain &vec, std::vector<int> jacobsthal, int argc)
+template <typename C>
+void runSort(C &arr, std::vector<int> jacobsthalNums, int argc)
 {
-    std::clock_t startVec = std::clock();
-    mergeInsertSort(vec, jacobsthal);
-    std::clock_t endVec = std::clock();
-    if (debug_mode)
-        printArr("After: ", vec);
-    printTime(startVec, endVec, argc, vec);
+    std::clock_t start = std::clock();
+    mergeInsertSort(arr, jacobsthalNums);
+    std::clock_t end = std::clock();
+    if (typeid(arr) == typeid(std::vector<int>))
+        printArr("After: ", arr);
+    printTime(start, end, argc, arr);
 }
