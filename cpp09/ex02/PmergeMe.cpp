@@ -25,15 +25,14 @@ void printArr(char** argv)
     std::cout << std::endl;
 };
 
-bool custom_cmp(const std::pair<int, int> &a, const std::pair<int, int> &b) {
-    return a.first < b.first;
-};
+// bool custom_cmp(const std::pair<int, int> &a, const std::pair<int, int> &b) {
+//     return a.first < b.first;
+// };
+
 
 void displaySort(int argc, char **argv)
 {
-    std::vector< std::pair<int, int> > vec;
     std::vector<int> main_chain;
-    int additional_value = -1;
     try
     {
         checkInput(argc, argv);
@@ -45,36 +44,35 @@ void displaySort(int argc, char **argv)
     }
     std::cout << "Before: " << std::flush;
     printArr(argv);
-    std::clock_t startVec = std::clock();
+    // std::clock_t startVec = std::clock();
     try
     {
-        mergeInsertSort(vec, main_chain, argv, additional_value);
+        mergeInsertSort(main_chain, argc, argv);
     }
     catch (std::exception &e)
     {
         std::cout << "Error: " << e.what() << std::endl;
         return;
     }
-    std::clock_t endVec = std::clock();
+    // std::clock_t endVec = std::clock();
     std::cout << "After: " << std::flush;
     print_after(main_chain);
 
-    std::deque< std::pair<int, int> > dec;
-    std::deque<int> main_chain_dec;
-    std::clock_t startDec = std::clock();
-    try
-    {
-        mergeInsertSort(dec, main_chain_dec, argv, additional_value);
-    }
-    catch (std::exception &e)
-    {
-        std::cout << "Error: " << e.what() << std::endl;
-        return;
-    }
-    std::clock_t endDec = std::clock();
+    // std::deque<int> main_chain_dec;
+    // std::clock_t startDec = std::clock();
+    // try
+    // {
+    //     mergeInsertSort(dec, main_chain_dec, argv, additional_value);
+    // }
+    // catch (std::exception &e)
+    // {
+    //     std::cout << "Error: " << e.what() << std::endl;
+    //     return;
+    // }
+    // std::clock_t endDec = std::clock();
     // std::cout << "After: " << std::flush;
     // print_after(main_chain_dec);
-    printTime(startVec, endVec, argc, vec);
-    printTime(startDec, endDec, argc, dec);
+    // printTime(startVec, endVec, argc, main_chain);
+    // printTime(startDec, endDec, argc, dec);
 }
 
