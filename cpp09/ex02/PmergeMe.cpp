@@ -15,27 +15,10 @@ void checkInput(int argc, char **argv)
     }
 };
 
-void printArr(char **argv)
-{
-    int i = 1;
-    while (argv[i])
-    {
-        std::string input = argv[i];
-        std::cout << input << " ";
-        i++;
-    }
-    std::cout << std::endl;
-};
-
-// bool custom_cmp(const std::pair<int, int> &a, const std::pair<int, int> &b) {
-//     return a.first < b.first;
-// };
-
-
-
 void displaySort(int argc, char **argv)
 {
-    std::vector<int> main_chain;
+    std::vector<int> vec;
+    std::deque<int> dec;
     try
     {
         checkInput(argc, argv);
@@ -45,39 +28,28 @@ void displaySort(int argc, char **argv)
         std::cout << "Error: " << e.what() << std::endl;
         return;
     }
+    populateArr(vec, argc, argv);
+    populateArr(dec, argc, argv);
     std::cout << "Before: " << std::flush;
-    printArr(argv);
-  
+    printArr(vec);
     try
     {
         std::clock_t startVec = std::clock();
-        mergeInsertSort(main_chain, argc, argv);
+        mergeInsertSort(vec);
         std::clock_t endVec = std::clock();
         std::cout << "After: " << std::flush;
-        print_after(main_chain);
-        printTime(startVec, endVec, argc, main_chain);
+        printArr(vec);
+        printTime(startVec, endVec, argc, vec);
+        std::clock_t startDec = std::clock();
+        mergeInsertSort(dec);
+        std::clock_t endDec = std::clock();
+        std::cout << "After: " << std::flush;
+        printArr(dec);
+        printTime(startDec, endDec, argc, dec);
     }
     catch (std::exception &e)
     {
         std::cout << "Error: " << e.what() << std::endl;
         return;
     }
-    
-    // std::cout << "After: " << std::flush;
-    // print_after(main_chain);
-
-    // std::deque<int> main_chain_dec;
-    // std::clock_t startDec = std::clock();
-    // try
-    // {
-    //     mergeInsertSort(dec, main_chain_dec, argv, additional_value);
-    // }
-    // catch (std::exception &e)
-    // {
-    //     std::cout << "Error: " << e.what() << std::endl;
-    //     return;
-    // }
-    // std::clock_t endDec = std::clock();
-    
-    // printTime(startDec, endDec, argc, dec);
 }

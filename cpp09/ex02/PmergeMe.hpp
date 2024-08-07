@@ -13,13 +13,22 @@
 #include <climits>
 
 void checkInput(int argc, char **argv);
-void printArr(char **argv);
 void displaySort(int argc, char **argv);
 extern bool debug_mode;
+
 template <typename ContainerMain>
-void print_after(ContainerMain &main_chain)
+void populateArr(ContainerMain &vec, int argc, char **argv)
 {
-    for (typename ContainerMain::iterator it = main_chain.begin(); it != main_chain.end(); it++)
+    for (int i = 1; i < argc; i++)
+    {
+        vec.push_back(std::atoi(argv[i]));
+    }
+}
+
+template <typename ContainerMain>
+void printArr(ContainerMain &vec)
+{
+    for (typename ContainerMain::iterator it = vec.begin(); it != vec.end(); it++)
     {
         std::cout << *it << " ";
     }
@@ -121,8 +130,8 @@ template <typename C, typename P>
 void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
 {
     // 1. Group by pairs
-    unsigned int a = 0;
-    unsigned int b = 0;
+    int a = 0;
+    int b = 0;
     long leftover = -1;
     for (typename C::iterator it = c.begin(); it != c.end(); it++)
     {
@@ -143,9 +152,7 @@ void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
     {
         if (it->first > it->second)
         {
-            unsigned int tmp = it->first;
-            it->first = it->second;
-            it->second = tmp;
+            std::swap(it->first, it->second);
         }
     }
     printPairs(p);
@@ -200,13 +207,13 @@ void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
 };
 // Populate the Jacobsthal Sequence
 template <typename ContainerMain>
-std::vector<int> populateJacob(ContainerMain &main_chain)
+std::vector<int> populateJacob(ContainerMain &vec)
 {
     std::vector<int> jacobsthal;
     jacobsthal.push_back(0);
     jacobsthal.push_back(1);
     jacobsthal.push_back(3);
-    for (int i = 3; i < static_cast<int>(main_chain.size()); i++)
+    for (int i = 3; i < static_cast<int>(vec.size()); i++)
         jacobsthal.push_back(jacobsthal[i - 1] + 2 * jacobsthal[i - 2]);
     if (debug_mode)
     {
@@ -218,14 +225,10 @@ std::vector<int> populateJacob(ContainerMain &main_chain)
 }
 
 template <typename ContainerMain>
-void mergeInsertSort(ContainerMain &main_chain, int argc, char **argv)
+void mergeInsertSort(ContainerMain &vec)
 {
     std::vector<int> jacobsthal;
-    std::vector<std::pair<int, int> > pv;
-    for (int i = 1; i < argc; i++)
-    {
-        main_chain.push_back(std::atoi(argv[i]));
-    }
-    jacobsthal = populateJacob(main_chain);
-    sortContainer(main_chain, pv, jacobsthal);
+    std::vector<std::pair<int, int> > pairs;
+    jacobsthal = populateJacob(vec);
+    sortContainer(vec, pairs, jacobsthal);
 }
