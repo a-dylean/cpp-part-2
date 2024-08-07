@@ -1,5 +1,7 @@
 #include "PmergeMe.hpp"
 
+bool _print = true; // Define _print here
+
 void checkInput(int argc, char **argv)
 {
     for (int i = 1; i < argc; ++i)
@@ -13,13 +15,13 @@ void checkInput(int argc, char **argv)
     }
 };
 
-void printArr(char** argv)
+void printArr(char **argv)
 {
     int i = 1;
     while (argv[i])
-	{
+    {
         std::string input = argv[i];
-	    std::cout << input << " ";
+        std::cout << input << " ";
         i++;
     }
     std::cout << std::endl;
@@ -28,6 +30,7 @@ void printArr(char** argv)
 // bool custom_cmp(const std::pair<int, int> &a, const std::pair<int, int> &b) {
 //     return a.first < b.first;
 // };
+
 
 
 void displaySort(int argc, char **argv)
@@ -55,8 +58,8 @@ void displaySort(int argc, char **argv)
         return;
     }
     // std::clock_t endVec = std::clock();
-    std::cout << "After: " << std::flush;
-    print_after(main_chain);
+    // std::cout << "After: " << std::flush;
+    // print_after(main_chain);
 
     // std::deque<int> main_chain_dec;
     // std::clock_t startDec = std::clock();
@@ -75,4 +78,3 @@ void displaySort(int argc, char **argv)
     // printTime(startVec, endVec, argc, main_chain);
     // printTime(startDec, endDec, argc, dec);
 }
-
