@@ -26,8 +26,9 @@ void populateArr(ContainerMain &vec, int argc, char **argv)
 }
 
 template <typename ContainerMain>
-void printArr(ContainerMain &vec)
+void printArr(std::string str, ContainerMain &vec)
 {
+    std::cout << str << std::flush;
     for (typename ContainerMain::iterator it = vec.begin(); it != vec.end(); it++)
     {
         std::cout << *it << " ";
@@ -223,4 +224,15 @@ std::vector<int> populateJacob(ContainerMain &vec)
             std::cout << *it << " ";
     }
     return jacobsthal;
+}
+
+template <typename ContainerMain>
+void runSort(ContainerMain &vec, std::vector<int> jacobsthal, int argc)
+{
+    std::clock_t startVec = std::clock();
+    mergeInsertSort(vec, jacobsthal);
+    std::clock_t endVec = std::clock();
+    if (debug_mode)
+        printArr("After: ", vec);
+    printTime(startVec, endVec, argc, vec);
 }

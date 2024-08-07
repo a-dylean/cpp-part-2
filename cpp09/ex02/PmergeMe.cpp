@@ -1,6 +1,6 @@
 #include "PmergeMe.hpp"
 
-bool debug_mode = false;
+bool debug_mode = true;
 
 void checkInput(int argc, char **argv)
 {
@@ -32,26 +32,7 @@ void displaySort(int argc, char **argv)
     populateArr(vec, argc, argv);
     populateArr(dec, argc, argv);
     jacobsthal = populateJacob(vec);
-    std::cout << "Before: " << std::flush;
-    printArr(vec);
-    try
-    {
-        std::clock_t startVec = std::clock();
-        mergeInsertSort(vec, jacobsthal);
-        std::clock_t endVec = std::clock();
-        std::cout << "After: " << std::flush;
-        printArr(vec);
-        printTime(startVec, endVec, argc, vec);
-        std::clock_t startDec = std::clock();
-        mergeInsertSort(dec, jacobsthal);
-        std::clock_t endDec = std::clock();
-        std::cout << "After: " << std::flush;
-        printArr(dec);
-        printTime(startDec, endDec, argc, dec);
-    }
-    catch (std::exception &e)
-    {
-        std::cout << "Error: " << e.what() << std::endl;
-        return;
-    }
+    printArr("Before: ", vec);
+    runSort(vec, jacobsthal, argc);
+    runSort(dec, jacobsthal, argc);
 }
