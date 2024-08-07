@@ -17,6 +17,7 @@ void checkInput(int argc, char **argv)
 
 void displaySort(int argc, char **argv)
 {
+    std::vector<int> jacobsthal;
     std::vector<int> vec;
     std::deque<int> dec;
     try
@@ -30,18 +31,19 @@ void displaySort(int argc, char **argv)
     }
     populateArr(vec, argc, argv);
     populateArr(dec, argc, argv);
+    jacobsthal = populateJacob(vec);
     std::cout << "Before: " << std::flush;
     printArr(vec);
     try
     {
         std::clock_t startVec = std::clock();
-        mergeInsertSort(vec);
+        mergeInsertSort(vec, jacobsthal);
         std::clock_t endVec = std::clock();
         std::cout << "After: " << std::flush;
         printArr(vec);
         printTime(startVec, endVec, argc, vec);
         std::clock_t startDec = std::clock();
-        mergeInsertSort(dec);
+        mergeInsertSort(dec, jacobsthal);
         std::clock_t endDec = std::clock();
         std::cout << "After: " << std::flush;
         printArr(dec);

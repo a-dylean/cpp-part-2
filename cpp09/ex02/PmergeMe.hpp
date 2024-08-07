@@ -126,9 +126,10 @@ void startBinarySearchInsert(C &c, P &p, size_t k)
     binarySearchInsert(c, low, high, value);
 }
 
-template <typename C, typename P>
-void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
+template <typename C>
+void mergeInsertSort(C &c, std::vector<int> jacobsthal)
 {
+    std::vector<std::pair<int, int> > pairs;
     // 1. Group by pairs
     int a = 0;
     int b = 0;
@@ -143,36 +144,36 @@ void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
             break;
         }
         b = *it;
-        p.push_back(std::make_pair(a, b));
+        pairs.push_back(std::make_pair(a, b));
     }
-    printPairs(p);
+    printPairs(pairs);
 
     // 2. Sort the pairs in place
-    for (typename P::iterator it = p.begin(); it != p.end(); it++)
+    for (std::vector<std::pair<int, int> >::iterator it = pairs.begin(); it != pairs.end(); it++)
     {
         if (it->first > it->second)
         {
             std::swap(it->first, it->second);
         }
     }
-    printPairs(p);
+    printPairs(pairs);
 
     // 3. Sort all the pairs by the lager element of the pair
-    sortPairs(p, 0);
-    printPairs(p);
+    sortPairs(pairs, 0);
+    printPairs(pairs);
 
     // 4. Add the lowest pair member to the container
     c.clear();
-    c.push_back(p.begin()->first);
+    c.push_back(pairs.begin()->first);
 
     // 5. Add the bigger (second) values of the pairs to the container
-    for (typename P::iterator it = p.begin(); it != p.end(); it++)
+    for (std::vector<std::pair<int, int> >::iterator it = pairs.begin(); it != pairs.end(); it++)
         c.push_back(it->second);
 
     // 6. add the leftover to the pairs
     if (leftover != -1)
-        p.push_back(std::make_pair(leftover, 0));
-    printPairs(p);
+        pairs.push_back(std::make_pair(leftover, 0));
+    printPairs(pairs);
     printContainer(c);
 
     // insert the paried values in the container
@@ -187,15 +188,15 @@ void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
         // Insert the next paired number following the
         // Jaconsthal numberindex
         k = jacobsthal[jIndex];
-        if (k >= p.size() - 1)
+        if (k >= pairs.size() - 1)
         {
-            k = p.size() - 1;
+            k = pairs.size() - 1;
             done = true;
         }
         // Insert backwards down to the previous Jacobsthal number
         while (k > jPrev)
         {
-            startBinarySearchInsert(c, p, k);
+            startBinarySearchInsert(c, pairs, k);
             printContainer(c);
             k--;
         }
@@ -222,13 +223,4 @@ std::vector<int> populateJacob(ContainerMain &vec)
             std::cout << *it << " ";
     }
     return jacobsthal;
-}
-
-template <typename ContainerMain>
-void mergeInsertSort(ContainerMain &vec)
-{
-    std::vector<int> jacobsthal;
-    std::vector<std::pair<int, int> > pairs;
-    jacobsthal = populateJacob(vec);
-    sortContainer(vec, pairs, jacobsthal);
 }
