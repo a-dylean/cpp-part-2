@@ -1,6 +1,6 @@
 #include "PmergeMe.hpp"
 
-bool debug_mode = false;
+bool debug_mode = true;
 
 void checkInput(int argc, char **argv)
 {
@@ -15,6 +15,20 @@ void checkInput(int argc, char **argv)
     }
 };
 
+std::vector<int> populateJacobsthalNums(std::vector<int> &arr)
+{
+    std::vector<int> jacobsthalNums;
+    jacobsthalNums.push_back(0);
+    jacobsthalNums.push_back(1);
+    jacobsthalNums.push_back(3);
+    for (int i = 3; i < static_cast<int>(arr.size()); i++)
+        jacobsthalNums.push_back(jacobsthalNums[i - 1] + 2 * jacobsthalNums[i - 2]);
+    if (debug_mode)
+    {
+        printArr("Jacobsthal numbers sequence: ", jacobsthalNums);
+    }
+    return jacobsthalNums;
+}
 void displaySort(int argc, char **argv)
 {
     std::vector<int> jacobsthalNums;
@@ -31,7 +45,7 @@ void displaySort(int argc, char **argv)
     }
     populateArr(vec, argc, argv);
     populateArr(dec, argc, argv);
-    jacobsthalNums = populateJacob(vec);
+    jacobsthalNums = populateJacobsthalNums(vec);
     printArr("Before: ", vec);
     runSort(vec, jacobsthalNums, argc);
     runSort(dec, jacobsthalNums, argc);
