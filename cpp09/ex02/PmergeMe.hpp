@@ -15,7 +15,7 @@
 void checkInput(int argc, char **argv);
 void printArr(char **argv);
 void displaySort(int argc, char **argv);
-extern bool _print;
+extern bool debug_mode;
 template <typename ContainerMain>
 void print_after(ContainerMain &main_chain)
 {
@@ -32,7 +32,7 @@ void printTime(std::clock_t start, std::clock_t end, int argc, T &container)
     double duration = 1000000.0 * static_cast<double>(end - start) / CLOCKS_PER_SEC;
     std::string name = typeid(container).name();
     name.erase(0, 3);
-    name.erase(name.size() - 20);
+    name.erase(name.size() - 8);
     std::cout << "Time to process a range of " << (argc - 1) << " elements with std::" << name << ":  " << std::fixed << std::setprecision(2) << duration << " us" << std::endl;
 }
 // Recursive function to sort all the pairs by the lager element of the pair
@@ -56,18 +56,19 @@ void sortPairs(P &p, size_t i)
 template <typename P>
 void printPairs(P &p)
 {
-    if (_print)
+    if (debug_mode)
     {
         std::cout << "\nPairs:\n";
+        int i = 0;
         for (typename P::iterator it = p.begin(); it != p.end(); it++)
-            std::cout << "(" << it->first << "\t| " << it->second << ") " << std::endl;
+            std::cout << "[" << i++ << "] " << "(" << it->first << "\t; " << it->second << ") " << std::endl;
     }
 }
 
 template <typename C>
 void printContainer(C &c)
 {
-    if (_print)
+    if (debug_mode)
     {
         std::cout << "\nContainer:\n";
         for (typename C::iterator it = c.begin(); it != c.end(); it++)
@@ -174,7 +175,7 @@ void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
     size_t k;
     while (!done)
     {
-        if (_print)
+        if (debug_mode)
             std::cout << "Next Jacobsthal number: " << jacobsthal[jIndex] << "\n";
         // Insert the next paired number following the
         // Jaconsthal numberindex
@@ -197,18 +198,17 @@ void sortContainer(C &c, P &p, std::vector<int> jacobsthal)
         jIndex++;
     }
 };
-
+// Populate the Jacobsthal Sequence
 template <typename ContainerMain>
 std::vector<int> populateJacob(ContainerMain &main_chain)
 {
-    // Populate the Jacobsthal Sequence
     std::vector<int> jacobsthal;
     jacobsthal.push_back(0);
     jacobsthal.push_back(1);
     jacobsthal.push_back(3);
     for (int i = 3; i < static_cast<int>(main_chain.size()); i++)
         jacobsthal.push_back(jacobsthal[i - 1] + 2 * jacobsthal[i - 2]);
-    if (_print)
+    if (debug_mode)
     {
         std::cout << "Jacobsthal Sequence:\t";
         for (std::vector<int>::iterator it = jacobsthal.begin(); it != jacobsthal.end(); it++)
@@ -221,7 +221,6 @@ template <typename ContainerMain>
 void mergeInsertSort(ContainerMain &main_chain, int argc, char **argv)
 {
     std::vector<int> jacobsthal;
-    // std::vector<int> v;
     std::vector<std::pair<int, int> > pv;
     for (int i = 1; i < argc; i++)
     {
@@ -229,11 +228,4 @@ void mergeInsertSort(ContainerMain &main_chain, int argc, char **argv)
     }
     jacobsthal = populateJacob(main_chain);
     sortContainer(main_chain, pv, jacobsthal);
-    // create_pairs(&arr, argv, &additional_value);
-    // sort_pairs(&arr);
-    // mergeSort<ContainerPairs>(arr.begin(), arr.end(), 0);
-    // init_main_chain(&main_chain, arr);
-    // insert_into_main_chain(arr, &main_chain, additional_value);
-    std::cout << "After: " << std::flush;
-    print_after(main_chain);
 }

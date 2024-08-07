@@ -1,6 +1,6 @@
 #include "PmergeMe.hpp"
 
-bool _print = true; // Define _print here
+bool debug_mode = false;
 
 void checkInput(int argc, char **argv)
 {
@@ -47,17 +47,22 @@ void displaySort(int argc, char **argv)
     }
     std::cout << "Before: " << std::flush;
     printArr(argv);
-    // std::clock_t startVec = std::clock();
+  
     try
     {
+        std::clock_t startVec = std::clock();
         mergeInsertSort(main_chain, argc, argv);
+        std::clock_t endVec = std::clock();
+        std::cout << "After: " << std::flush;
+        print_after(main_chain);
+        printTime(startVec, endVec, argc, main_chain);
     }
     catch (std::exception &e)
     {
         std::cout << "Error: " << e.what() << std::endl;
         return;
     }
-    // std::clock_t endVec = std::clock();
+    
     // std::cout << "After: " << std::flush;
     // print_after(main_chain);
 
@@ -73,8 +78,6 @@ void displaySort(int argc, char **argv)
     //     return;
     // }
     // std::clock_t endDec = std::clock();
-    // std::cout << "After: " << std::flush;
-    // print_after(main_chain_dec);
-    // printTime(startVec, endVec, argc, main_chain);
+    
     // printTime(startDec, endDec, argc, dec);
 }
