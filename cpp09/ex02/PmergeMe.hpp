@@ -67,14 +67,12 @@ void sortPairs(P &pairs, size_t i)
     for (size_t j = i + 1; j < pairs.size(); j++)
     {
         if (pairs[i].second > pairs[j].second)
-        {
             std::swap(pairs[i], pairs[j]);
-        }
     }
     sortPairs(pairs, i + 1);
 }
 template <typename C>
-size_t findIndex(C &arr, int value)
+size_t getIndex(C &arr, int value)
 {
     size_t i = 0;
     for (typename C::iterator it = arr.begin(); it != arr.end(); it++)
@@ -83,7 +81,6 @@ size_t findIndex(C &arr, int value)
             return i;
         i++;
     }
-    // If not found return the last index
     return i;
 }
 
@@ -107,21 +104,55 @@ void startbinarySearchInsertion(C &arr, P &pairs, size_t index)
 {
     int value = pairs[index].first;
     size_t low = 0;
-    size_t high = findIndex(arr, value);
+    size_t high = getIndex(arr, value);
     binarySearchInsertion(arr, low, high, value);
 }
 
-template <typename C>
-void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
+template<typename C, typename P>
+void fjmi(C &arr, P &pairs, std::vector<int> jacobsthalNums)
 {
-    std::vector<std::pair<int, int> > pairs;
-    std::vector<std::pair<int, int> >::iterator it;
+    bool sorted = false;
+    size_t jIndex = 1;
+    size_t jPrev = jacobsthalNums[jIndex - 1];
+    size_t group;
+    while (!sorted)
+    {
+        if (debug_mode)
+            std::cout << "Next jacobsthal number: " << jacobsthalNums[jIndex] << std::endl;
+        group = jacobsthalNums[jIndex];
+        if (group >= pairs.size() - 1)
+        {
+            group = pairs.size() - 1;
+            sorted = true;
+        }
+        while (group > jPrev)
+        {
+            startbinarySearchInsertion(arr, pairs, group);
+            if (debug_mode)
+                printArr("\nCurrent container state:\n", arr);
+            group--;
+        }
+        jPrev = jacobsthalNums[jIndex];
+        jIndex++;
+    }
+};
 
-    // PAIRWISE COMPARISON
-    // 1. Create array of pairs from the container
+template<typename P>
+void swapInsidePairs(P &pairs, std::vector<std::pair<int, int> >::iterator it)
+{
+    for (it = pairs.begin(); it != pairs.end(); it++)
+    {
+        if (it->first > it->second)
+            std::swap(it->first, it->second);
+    }
+}
+
+template <typename C, typename P>
+void createPairs(C &arr, P &pairs, int &unpaired)
+{
     int a = 0;
     int b = 0;
-    long unpaired = -1;
+    
     for (typename C::iterator it = arr.begin(); it != arr.end(); it++)
     {
         a = *it;
@@ -134,15 +165,20 @@ void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
         b = *it;
         pairs.push_back(std::make_pair(a, b));
     }
+};
+
+template <typename C>
+void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
+{
+    std::vector<std::pair<int, int> > pairs;
+    std::vector<std::pair<int, int> >::iterator it;
+    int unpaired = -1;
+    // PAIRWISE COMPARISON
+    // 1. Create array of pairs from the container
+    createPairs(arr, pairs, unpaired);
     printPairs(pairs);
     // 2. Swap the elements of the pair if the first element is bigger than the second
-    for (it = pairs.begin(); it != pairs.end(); it++)
-    {
-        if (it->first > it->second)
-        {
-            std::swap(it->first, it->second);
-        }
-    }
+    swapInsidePairs(pairs, it);
     printPairs(pairs);
     // RECURSIVE SORT AND REPUSHING VALUES TO THE CONTAINER
     // 3. Sort pairs recursively by their higher value in ascending sequence
@@ -154,7 +190,7 @@ void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
     // 5. Add all (second) the bigger values of the pairs to the container
     for (it = pairs.begin(); it != pairs.end(); it++)
         arr.push_back(it->second);
-    // 6. Add the unpaired element to the pairs
+    // 6. Add the unpaired element to the pairs so that it can be inserted back
     if (unpaired != -1)
     {
         pairs.push_back(std::make_pair(unpaired, 0));
@@ -165,31 +201,7 @@ void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
     // BINARY INSERTION
     // 7. Insert the rest (first) lower values to the container using binary inserion and Jacobsthal numbers
     // to select those which would require minimal possible range of comparisons
-    bool sorted = false;
-    size_t jIndex = 1;
-    size_t jPrev = jacobsthalNums[jIndex - 1];
-    size_t k;
-    while (!sorted)
-    {
-        if (debug_mode)
-            std::cout << "Next jacobsthal number: " << jacobsthalNums[jIndex] << std::endl;
-        // Insert the next value following the Jaconsthal number index
-        k = jacobsthalNums[jIndex];
-        if (k >= pairs.size() - 1)
-        {
-            k = pairs.size() - 1;
-            sorted = true;
-        }
-        while (k > jPrev)
-        {
-            startbinarySearchInsertion(arr, pairs, k);
-            if (debug_mode)
-                printArr("\nCurrent container state:\n", arr);
-            k--;
-        }
-        jPrev = jacobsthalNums[jIndex];
-        jIndex++;
-    }
+    fjmi(arr, pairs, jacobsthalNums);
 };
 
 template <typename C>

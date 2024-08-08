@@ -1,6 +1,6 @@
 #include "PmergeMe.hpp"
 
-bool debug_mode = true;
+bool debug_mode = false;
 
 void checkInput(int argc, char **argv)
 {
