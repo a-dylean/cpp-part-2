@@ -99,15 +99,6 @@ void binarySearchInsertion(C &arr, size_t low, size_t high, int value)
         binarySearchInsertion(arr, mid + 1, high, value);
 }
 
-template <typename C, typename P>
-void startbinarySearchInsertion(C &arr, P &pairs, size_t index)
-{
-    int value = pairs[index].first;
-    size_t low = 0;
-    size_t high = getIndex(arr, value);
-    binarySearchInsertion(arr, low, high, value);
-}
-
 template<typename C, typename P>
 void fjmi(C &arr, P &pairs, std::vector<int> jacobsthalNums)
 {
@@ -127,7 +118,7 @@ void fjmi(C &arr, P &pairs, std::vector<int> jacobsthalNums)
         }
         while (group > jPrev)
         {
-            startbinarySearchInsertion(arr, pairs, group);
+            binarySearchInsertion(arr, 0, getIndex(arr, pairs[group].first), pairs[group].first);
             if (debug_mode)
                 printArr("\nCurrent container state:\n", arr);
             group--;
@@ -181,7 +172,7 @@ void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
     swapInsidePairs(pairs, it);
     printPairs(pairs);
     // RECURSIVE SORT AND REPUSHING VALUES TO THE CONTAINER
-    // 3. Sort pairs recursively by their higher value in ascending sequence
+    // 3. Sort pairs recursively by their higher value in ascending order
     sortPairs(pairs, 0);
     printPairs(pairs);
     // 4. Add the (first) lowest pair element to the container
