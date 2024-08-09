@@ -10,7 +10,7 @@ void checkInput(int argc, char **argv)
         if (str.find_first_not_of("-0123456789") != str.npos)
             throw std::invalid_argument("invalid input: not a number");
         double value = strtod(argv[i], 0);
-        if (value > INT_MAX || value < 1)
+        if (value > INT_MAX || value < 0)
             throw std::invalid_argument("invalid input: not within INT range, negavite number or 0");
     }
 };
@@ -24,9 +24,7 @@ std::vector<int> populateJacobsthalNums(std::vector<int> &arr)
     for (int i = 3; i < static_cast<int>(arr.size()); i++)
         jacobsthalNums.push_back(jacobsthalNums[i - 1] + 2 * jacobsthalNums[i - 2]);
     if (debug_mode)
-    {
         printArr("Jacobsthal numbers sequence: ", jacobsthalNums);
-    }
     return jacobsthalNums;
 }
 void displaySort(int argc, char **argv)

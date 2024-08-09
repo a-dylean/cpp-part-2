@@ -102,32 +102,43 @@ void binarySearchInsertion(C &arr, size_t low, size_t high, int value)
 template<typename C, typename P>
 void fjmi(C &arr, P &pairs, std::vector<int> jacobsthalNums)
 {
+    size_t i = 1;
+    size_t prev = jacobsthalNums[i - 1];
     bool sorted = false;
-    size_t jIndex = 1;
-    size_t jPrev = jacobsthalNums[jIndex - 1];
-    size_t group;
     while (!sorted)
     {
         if (debug_mode)
-            std::cout << "Next jacobsthal number: " << jacobsthalNums[jIndex] << std::endl;
-        group = jacobsthalNums[jIndex];
+            std::cout << "Next jacobsthal number: " << jacobsthalNums[i] << std::endl;
+        size_t group = jacobsthalNums[i];
         if (group >= pairs.size() - 1)
         {
             group = pairs.size() - 1;
             sorted = true;
         }
-        while (group > jPrev)
+        while (group > prev)
         {
             binarySearchInsertion(arr, 0, getIndex(arr, pairs[group].first), pairs[group].first);
             if (debug_mode)
                 printArr("\nCurrent container state:\n", arr);
             group--;
         }
-        jPrev = jacobsthalNums[jIndex];
-        jIndex++;
+        prev = jacobsthalNums[i];
+        i++;
     }
 };
-
+template <typename C, typename P>
+void processPairs(C &arr, P &pairs, std::vector<std::pair<int, int> >::iterator it, int unpaired)
+{
+    arr.clear();
+    arr.push_back(pairs.begin()->first);
+    for (it = pairs.begin(); it != pairs.end(); it++)
+        arr.push_back(it->second);
+    if (unpaired != -1)
+    {
+        pairs.push_back(std::make_pair(unpaired, 0));
+        printPairs(pairs);
+    }
+}
 template<typename P>
 void swapInsidePairs(P &pairs, std::vector<std::pair<int, int> >::iterator it)
 {
@@ -175,23 +186,12 @@ void mergeInsertSort(C &arr, std::vector<int> jacobsthalNums)
     // 3. Sort pairs recursively by their higher value in ascending order
     sortPairs(pairs, 0);
     printPairs(pairs);
-    // 4. Add the (first) lowest pair element to the container
-    arr.clear();
-    arr.push_back(pairs.begin()->first);
-    // 5. Add all (second) the bigger values of the pairs to the container
-    for (it = pairs.begin(); it != pairs.end(); it++)
-        arr.push_back(it->second);
-    // 6. Add the unpaired element to the pairs so that it can be inserted back
-    if (unpaired != -1)
-    {
-        pairs.push_back(std::make_pair(unpaired, 0));
-        printPairs(pairs);
-    }
+    // 4. Clear container. Add the (first) lowest pair element to the container. Add all the bigger values (second) of the pairs to the container. Add the unpaired element to the pairs so that it can be inserted back in the end
+    processPairs(arr, pairs, it, unpaired);
     if (debug_mode)
         printArr("\nCurrent container state:\n", arr);
     // BINARY INSERTION
-    // 7. Insert the rest (first) lower values to the container using binary inserion and Jacobsthal numbers
-    // to select those which would require minimal possible range of comparisons
+    // 5. Insert the rest (first) lower values to the container using binary inserion and Jacobsthal numbers to select those which would require minimal possible range of comparisons
     fjmi(arr, pairs, jacobsthalNums);
 };
 
