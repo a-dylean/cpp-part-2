@@ -24,12 +24,12 @@ private:
 	std::string inputData;
 	double calculateResult(std::string date, double value);
 	void printResult(std::string date, double value, double result);
-	void convert(std::string const & line);
+	void convert(std::string const &line);
 public:
 	BitcoinExchange(std::string const &data);
 	~BitcoinExchange();
 	void printConversion();
-	
+
 	class BadInputException : public std::exception
 	{
 	public:

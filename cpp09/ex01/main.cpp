@@ -9,5 +9,4 @@ int main(int argc, char **argv)
     }
     std::cout << "Invalid input! Usage: ./RNP [inverted Polish mathematical expression]" << std::endl;
     return 1;
-
 }

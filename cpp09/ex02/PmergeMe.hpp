@@ -99,7 +99,7 @@ void binarySearchInsertion(C &arr, size_t low, size_t high, int value)
         binarySearchInsertion(arr, mid + 1, high, value);
 }
 
-template<typename C, typename P>
+template <typename C, typename P>
 void fjmi(C &arr, P &pairs, std::vector<int> jacobsthalNums)
 {
     size_t i = 1;
@@ -139,7 +139,7 @@ void processPairs(C &arr, P &pairs, std::vector<std::pair<int, int> >::iterator 
         printPairs(pairs);
     }
 }
-template<typename P>
+template <typename P>
 void swapInsidePairs(P &pairs, std::vector<std::pair<int, int> >::iterator it)
 {
     for (it = pairs.begin(); it != pairs.end(); it++)
@@ -154,7 +154,7 @@ void createPairs(C &arr, P &pairs, int &unpaired)
 {
     int a = 0;
     int b = 0;
-    
+
     for (typename C::iterator it = arr.begin(); it != arr.end(); it++)
     {
         a = *it;
